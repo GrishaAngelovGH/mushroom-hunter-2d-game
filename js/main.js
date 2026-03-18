@@ -7,6 +7,7 @@ import {
 import { keys } from './input.js';
 import { toggleLog } from './ui.js';
 import { generateWorld } from './world.js';
+import { drawBackground } from './background.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -42,21 +43,24 @@ function gameLoop() {
     try {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // 1. Simulate movement (temporary until player is added)
+        // 1. Draw Background (Parallax)
+        drawBackground(ctx, canvas, scrollOffset);
+
+        // 2. Simulate movement (temporary until player is added)
         setScrollOffset(scrollOffset + 2);
 
-        // 2. Infinite generation: generate world ahead of view
+        // 3. Infinite generation: generate world ahead of view
         if (lastGeneratedX < scrollOffset + CANVAS_WIDTH + 1000) {
             generateWorld(lastGeneratedX, 2000);
             setLastGeneratedX(lastGeneratedX + 2000);
         }
 
-        // 3. Entity Pruning: remove off-screen entities for performance
+        // 4. Entity Pruning: remove off-screen entities for performance
         if (platforms.length > 50) {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
         }
 
-        // 4. Draw Entities
+        // 5. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
 
         requestAnimationFrame(gameLoop);
