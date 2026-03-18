@@ -2,7 +2,7 @@ import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
 import { 
     gameActive, setGameActive, platforms, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
-    updatePlatforms
+    updatePlatforms, player
 } from './state.js';
 import { keys } from './input.js';
 import { toggleLog } from './ui.js';
@@ -46,8 +46,8 @@ function gameLoop() {
         // 1. Draw Background (Parallax)
         drawBackground(ctx, canvas, scrollOffset);
 
-        // 2. Simulate movement (temporary until player is added)
-        setScrollOffset(scrollOffset + 2);
+        // 2. Update Entities
+        player.update();
 
         // 3. Infinite generation: generate world ahead of view
         if (lastGeneratedX < scrollOffset + CANVAS_WIDTH + 1000) {
@@ -62,6 +62,7 @@ function gameLoop() {
 
         // 5. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
+        player.draw(ctx, scrollOffset);
 
         requestAnimationFrame(gameLoop);
     } catch (e) {

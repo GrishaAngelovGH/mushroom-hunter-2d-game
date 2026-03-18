@@ -1,8 +1,11 @@
+import { Player } from './entities/Player.js';
+
 export let gameActive = true;
 export let platforms = [];
 export let coins = [];
 export let enemies = [];
 export let powerups = [];
+export let player = new Player();
 
 export let lastPlatX = 100;
 export let lastPlatY = 550;
@@ -32,4 +35,5 @@ export function resetState() {
     lastPlatY = 550;
     lastGeneratedX = 0;
     scrollOffset = 0;
+    player.reset();
 }
