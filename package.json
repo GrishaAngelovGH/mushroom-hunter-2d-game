@@ -1,0 +1,24 @@
+{
+  "name": "mushroom-hunter-2d-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "five-server ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrishaAngelovGH/mushroom-hunter-2d-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GrishaAngelovGH/mushroom-hunter-2d-game/issues"
+  },
+  "homepage": "https://github.com/GrishaAngelovGH/mushroom-hunter-2d-game#readme",
+  "devDependencies": {
+    "five-server": "^0.4.5"
+  }
+}
