@@ -1,5 +1,9 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
-import { gameActive, setGameActive, platforms, resetState, lastGeneratedX, setLastGeneratedX } from './state.js';
+import { 
+    gameActive, setGameActive, platforms, resetState, 
+    lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
+    updatePlatforms
+} from './state.js';
 import { keys } from './input.js';
 import { toggleLog } from './ui.js';
 import { generateWorld } from './world.js';
@@ -12,7 +16,7 @@ canvas.height = CANVAS_HEIGHT;
 
 function initLevel() {
     resetState();
-    // Seed initial level (first 2000px)
+    // Seed initial level
     generateWorld(0, 2000);
     setLastGeneratedX(2000);
 }
@@ -38,9 +42,22 @@ function gameLoop() {
     try {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Update and Draw Entities
-        // Draw Platforms (scrollOffset is 0 for now)
-        platforms.forEach(p => p.draw(ctx, 0));
+        // 1. Simulate movement (temporary until player is added)
+        setScrollOffset(scrollOffset + 2);
+
+        // 2. Infinite generation: generate world ahead of view
+        if (lastGeneratedX < scrollOffset + CANVAS_WIDTH + 1000) {
+            generateWorld(lastGeneratedX, 2000);
+            setLastGeneratedX(lastGeneratedX + 2000);
+        }
+
+        // 3. Entity Pruning: remove off-screen entities for performance
+        if (platforms.length > 50) {
+            updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
+        }
+
+        // 4. Draw Entities
+        platforms.forEach(p => p.draw(ctx, scrollOffset));
 
         requestAnimationFrame(gameLoop);
     } catch (e) {
