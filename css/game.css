@@ -5,3 +5,9 @@ canvas {
     transition: border-radius 0.2s ease;
     display: block;
 }
+
+/* Straighten bottom corners of canvas when log is open */
+#game-container.log-open canvas {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}

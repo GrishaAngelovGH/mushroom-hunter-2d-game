@@ -29,3 +29,10 @@ export function addLog(message, type = 'info') {
         eventPanel.removeChild(eventPanel.firstChild);
     }
 }
+
+export function toggleLog() {
+    const panel = document.getElementById('log-panel');
+    const container = document.getElementById('game-container');
+    const isHidden = panel.classList.toggle('hidden');
+    container.classList.toggle('log-open', !isHidden);
+}
