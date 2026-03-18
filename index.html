@@ -9,6 +9,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            background-color: #87CEEB; /* Sky blue */
             font-family: 'Arial', sans-serif;
         }
 
@@ -20,11 +21,27 @@
             align-items: center;
             height: 100vh;
         }
+
+        canvas {
+            border: 4px solid #333;
+            background-color: #87CEEB;
+            border-radius: 12px;
+            transition: border-radius 0.2s ease;
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <!-- Game elements will be added here -->
+        <canvas id="gameCanvas"></canvas>
     </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = 1200;
+        canvas.height = 600;
+    </script>
 </body>
 </html>
