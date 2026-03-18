@@ -6,6 +6,7 @@ export let powerups = [];
 
 export let lastPlatX = 100;
 export let lastPlatY = 550;
+export let lastGeneratedX = 0;
 
 export function setGameActive(value) {
     gameActive = value;
@@ -13,6 +14,7 @@ export function setGameActive(value) {
 
 export function setLastPlatX(val) { lastPlatX = val; }
 export function setLastPlatY(val) { lastPlatY = val; }
+export function setLastGeneratedX(val) { lastGeneratedX = val; }
 
 export function resetState() {
     platforms.length = 0;
@@ -21,4 +23,5 @@ export function resetState() {
     powerups.length = 0;
     lastPlatX = 100;
     lastPlatY = 550;
+    lastGeneratedX = 0;
 }
