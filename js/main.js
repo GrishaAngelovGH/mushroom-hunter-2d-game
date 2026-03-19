@@ -47,22 +47,27 @@ function gameLoop() {
         // 1. Draw Background (Parallax)
         drawBackground(ctx, canvas, scrollOffset);
 
-        // 2. Update Entities
+        // 2. Update camera (Horizontal scrolling follows player)
+        if (player.x > scrollOffset + canvas.width / 2) {
+            setScrollOffset(player.x - canvas.width / 2);
+        }
+
+        // 3. Update Entities
         player.update();
         if (chatBubble.timer > 0) chatBubble.timer--;
 
-        // 3. Infinite generation: generate world ahead of view
-        if (lastGeneratedX < scrollOffset + CANVAS_WIDTH + 1000) {
+        // 4. Infinite generation: generate world ahead of player
+        if (player.x + canvas.width > lastGeneratedX) {
             generateWorld(lastGeneratedX, 2000);
             setLastGeneratedX(lastGeneratedX + 2000);
         }
 
-        // 4. Entity Pruning: remove off-screen entities for performance
+        // 5. Entity Pruning: remove off-screen entities for performance
         if (platforms.length > 50) {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
         }
 
-        // 5. Draw Entities
+        // 6. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
         player.draw(ctx, scrollOffset);
 
