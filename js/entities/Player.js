@@ -1,6 +1,6 @@
 import { GRAVITY, FRICTION, MOVE_SPEED, JUMP_FORCE, CANVAS_HEIGHT } from '../config.js';
 import { keys } from '../input.js';
-import { chatBubble } from '../state.js';
+import { chatBubble, platforms } from '../state.js';
 
 export class Player {
     constructor() {
@@ -13,7 +13,7 @@ export class Player {
 
     reset() {
         this.x = 100;
-        this.y = CANVAS_HEIGHT - 100;
+        this.y = CANVAS_HEIGHT - 150;
         this.vx = 0;
         this.vy = 0;
         this.isJumping = false;
@@ -23,19 +23,11 @@ export class Player {
     }
 
     update() {
-        const wasGrounded = this.grounded;
-        
-        // Temporary ground check until collision commit (L18)
-        if (this.y >= CANVAS_HEIGHT - 100) {
-            this.grounded = true;
-            this.isJumping = false;
-            if (this.vy > 0) this.vy = 0;
-            this.y = CANVAS_HEIGHT - 100;
-        } else {
-            this.grounded = false;
-        }
+        // 1. Apply Physics
+        this.vy += GRAVITY;
+        this.vx *= FRICTION;
 
-        // Left/Right Movement
+        // 2. Input
         if (keys['ArrowLeft']) {
             if (this.vx > -MOVE_SPEED) this.vx--;
         }
@@ -43,21 +35,52 @@ export class Player {
             if (this.vx < MOVE_SPEED) this.vx++;
         }
 
-        // Jump
-        if ((keys['ArrowUp'] || keys[' ']) && !this.isJumping && wasGrounded) {
+        // 3. Jump (Check grounded status from LAST frame)
+        if ((keys['ArrowUp'] || keys[' ']) && !this.isJumping && this.grounded) {
             this.vy = JUMP_FORCE;
             this.isJumping = true;
             this.grounded = false;
         }
 
-        // Apply Physics
-        this.vy += GRAVITY;
-        this.vx *= FRICTION;
-
+        // Apply movement
         this.x += this.vx;
         this.y += this.vy;
 
-        // Facing and Animation
+        // 4. Resolve Platform Collisions
+        this.grounded = false;
+        for (const p of platforms) {
+            // Vertical Collision
+            if (this.x + this.width > p.x && this.x < p.x + p.width) {
+                // Falling onto top
+                if (this.vy >= 0 && this.y + this.height >= p.y && this.y + this.height - this.vy <= p.y) {
+                    this.y = p.y - this.height;
+                    this.vy = 0;
+                    this.grounded = true;
+                    this.isJumping = false;
+                }
+                // Bonking head on bottom
+                else if (this.vy < 0 && this.y <= p.y + p.height && this.y - this.vy >= p.y + p.height) {
+                    this.y = p.y + p.height;
+                    this.vy = 0;
+                }
+            }
+
+            // Horizontal Collision (Wall push)
+            if (this.y + this.height > p.y && this.y < p.y + p.height) {
+                // Moving right into left wall
+                if (this.vx > 0 && this.x + this.width >= p.x && this.x + this.width - this.vx <= p.x) {
+                    this.x = p.x - this.width;
+                    this.vx = 0;
+                }
+                // Moving left into right wall
+                else if (this.vx < 0 && this.x <= p.x + p.width && this.x - this.vx >= p.x + p.width) {
+                    this.x = p.x + p.width;
+                    this.vx = 0;
+                }
+            }
+        }
+
+        // Animation and Facing
         if (Math.abs(this.vx) > 0.1) {
             this.facing = this.vx > 0 ? 1 : -1;
             if (this.grounded) {
@@ -67,6 +90,7 @@ export class Player {
             this.animTimer = 0;
         }
 
+        // Boundary Clamps
         if (this.x < 0) {
             this.x = 0;
             this.vx = 0;
@@ -176,7 +200,7 @@ export class Player {
         if (chatBubble.timer > 0) {
             const alpha = Math.min(1, chatBubble.timer / 20); // fade out last 20 frames
             const bx = screenX + this.width / 2;
-            const by = screenY - 20; // Nudged down just a bit
+            const by = screenY - 20; // High above head
             const text = chatBubble.text;
             const padding = 10;
 
