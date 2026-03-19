@@ -1,4 +1,5 @@
 import { GRAVITY, FRICTION, MOVE_SPEED, JUMP_FORCE, CANVAS_HEIGHT } from '../config.js';
+import { keys } from '../input.js';
 
 export class Player {
     constructor() {
@@ -21,12 +22,30 @@ export class Player {
     }
 
     update() {
-        // Initial physics constants setup
+        // Left/Right Movement
+        if (keys['ArrowLeft']) {
+            if (this.vx > -MOVE_SPEED) this.vx--;
+        }
+        if (keys['ArrowRight']) {
+            if (this.vx < MOVE_SPEED) this.vx++;
+        }
+
+        // Apply Physics
         this.vy += GRAVITY;
         this.vx *= FRICTION;
 
         this.x += this.vx;
         this.y += this.vy;
+
+        // Facing and Animation
+        if (Math.abs(this.vx) > 0.1) {
+            this.facing = this.vx > 0 ? 1 : -1;
+            if (this.grounded) {
+                this.animTimer += Math.abs(this.vx) * 0.15;
+            }
+        } else if (this.grounded) {
+            this.animTimer = 0;
+        }
 
         if (this.x < 0) {
             this.x = 0;
