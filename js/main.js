@@ -6,7 +6,7 @@ import {
     score, highScore, coinsCount, stoneAmmo
 } from './state.js';
 import { keys } from './input.js';
-import { toggleLog } from './ui.js';
+import { toggleLog, addLog } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
 
@@ -17,8 +17,21 @@ const highScoreElement = document.getElementById('high-score');
 const coinsElement = document.getElementById('coins');
 const stonesElement = document.getElementById('stones');
 
+const gameOverScreen = document.getElementById('game-over');
+const statusText = document.getElementById('status-text');
+const finalScoreElement = document.getElementById('final-score');
+const restartBtn = document.getElementById('restart-btn');
+
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
+
+export function endGame(win = false) {
+    setGameActive(false);
+    gameOverScreen.style.display = 'block';
+    statusText.innerText = win ? "You Win!" : "Game Over!";
+    finalScoreElement.innerText = score;
+    addLog(win ? "Victory!" : "Game Over.", win ? 'win' : 'info');
+}
 
 function initLevel() {
     resetState();
@@ -30,9 +43,12 @@ function initLevel() {
 }
 
 function resetGame() {
+    gameOverScreen.style.display = 'none';
     initLevel();
     setGameActive(true);
 }
+
+restartBtn.addEventListener('click', resetGame);
 
 // UI Toggles
 window.addEventListener('keydown', (e) => {

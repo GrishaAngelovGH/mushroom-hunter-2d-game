@@ -1,6 +1,7 @@
 import { GRAVITY, FRICTION, MOVE_SPEED, JUMP_FORCE, CANVAS_HEIGHT } from '../config.js';
 import { keys } from '../input.js';
 import { chatBubble, platforms } from '../state.js';
+import { endGame } from '../main.js';
 
 export class Player {
     constructor() {
