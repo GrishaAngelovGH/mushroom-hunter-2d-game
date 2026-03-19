@@ -1,4 +1,5 @@
 import { Player } from './entities/Player.js';
+import { addLog } from './ui.js';
 
 export let gameActive = true;
 export let platforms = [];
@@ -31,7 +32,15 @@ export function setChatBubble(text, timer) {
 }
 
 export function addScore(amount) {
+    const oldScore = score;
     score += amount;
+    
+    // Milestone every 100 points
+    if (score > 0 && Math.floor(score / 100) > Math.floor(oldScore / 100)) {
+        setChatBubble("Milestone reached!", 150);
+        addLog(`Great work! ${Math.floor(score / 100) * 100} points!`, 'win');
+    }
+
     if (score > highScore) {
         highScore = score;
         localStorage.setItem('mushroomHighScore', highScore);
