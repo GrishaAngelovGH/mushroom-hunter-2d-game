@@ -1,8 +1,9 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
-import { 
-    gameActive, setGameActive, platforms, resetState, 
+import {
+    gameActive, setGameActive, platforms, resetState,
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
-    updatePlatforms, player, chatBubble, setChatBubble
+    updatePlatforms, player, chatBubble, setChatBubble,
+    score, highScore
 } from './state.js';
 import { keys } from './input.js';
 import { toggleLog } from './ui.js';
@@ -11,6 +12,8 @@ import { drawBackground } from './background.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const scoreElement = document.getElementById('score');
+const highScoreElement = document.getElementById('high-score');
 
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
@@ -20,7 +23,8 @@ function initLevel() {
     // Seed initial level
     generateWorld(0, 2000);
     setLastGeneratedX(2000);
-    setChatBubble("Let's hunt!", 180);
+    setChatBubble("Let's go!", 180);
+    highScoreElement.innerText = highScore;
 }
 
 function resetGame() {
@@ -43,31 +47,35 @@ function gameLoop() {
 
     try {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         // 1. Draw Background (Parallax)
         drawBackground(ctx, canvas, scrollOffset);
 
-        // 2. Update camera (Horizontal scrolling follows player)
+        // 2. Update HUD
+        scoreElement.innerText = score;
+        highScoreElement.innerText = highScore;
+
+        // 3. Update camera (Horizontal scrolling follows player)
         if (player.x > scrollOffset + canvas.width / 2) {
             setScrollOffset(player.x - canvas.width / 2);
         }
 
-        // 3. Update Entities
+        // 4. Update Entities
         player.update();
         if (chatBubble.timer > 0) chatBubble.timer--;
 
-        // 4. Infinite generation: generate world ahead of player
+        // 5. Infinite generation: generate world ahead of player
         if (player.x + canvas.width > lastGeneratedX) {
             generateWorld(lastGeneratedX, 2000);
             setLastGeneratedX(lastGeneratedX + 2000);
         }
 
-        // 5. Entity Pruning: remove off-screen entities for performance
+        // 6. Entity Pruning: remove off-screen entities for performance
         if (platforms.length > 50) {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
         }
 
-        // 6. Draw Entities
+        // 7. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
         player.draw(ctx, scrollOffset);
 

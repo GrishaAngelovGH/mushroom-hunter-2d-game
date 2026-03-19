@@ -8,6 +8,9 @@ export let powerups = [];
 export let player = new Player();
 export let chatBubble = { text: '', timer: 0 };
 
+export let score = 0;
+export let highScore = parseInt(localStorage.getItem('mushroomHighScore')) || 0;
+
 export let lastPlatX = 100;
 export let lastPlatY = 550;
 export let lastGeneratedX = 0;
@@ -27,6 +30,14 @@ export function setChatBubble(text, timer) {
     chatBubble.timer = timer;
 }
 
+export function addScore(amount) {
+    score += amount;
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('mushroomHighScore', highScore);
+    }
+}
+
 export function updatePlatforms(newList) { platforms.length = 0; platforms.push(...newList); }
 export function updateCoins(newList) { coins.length = 0; coins.push(...newList); }
 export function updateEnemies(newList) { enemies.length = 0; enemies.push(...newList); }
@@ -41,6 +52,7 @@ export function resetState() {
     lastPlatY = 550;
     lastGeneratedX = 0;
     scrollOffset = 0;
+    score = 0;
     player.reset();
     chatBubble.timer = 0;
 }
