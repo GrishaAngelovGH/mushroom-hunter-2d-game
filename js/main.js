@@ -1,9 +1,9 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
-import {
-    gameActive, setGameActive, platforms, resetState,
+import { 
+    gameActive, setGameActive, platforms, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, player, chatBubble, setChatBubble,
-    score, highScore
+    score, highScore, coinsCount, stoneAmmo
 } from './state.js';
 import { keys } from './input.js';
 import { toggleLog } from './ui.js';
@@ -14,6 +14,8 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('high-score');
+const coinsElement = document.getElementById('coins');
+const stonesElement = document.getElementById('stones');
 
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
@@ -23,7 +25,7 @@ function initLevel() {
     // Seed initial level
     generateWorld(0, 2000);
     setLastGeneratedX(2000);
-    setChatBubble("Let's go!", 180);
+    setChatBubble("Let's hunt!", 180);
     highScoreElement.innerText = highScore;
 }
 
@@ -47,13 +49,15 @@ function gameLoop() {
 
     try {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+        
         // 1. Draw Background (Parallax)
         drawBackground(ctx, canvas, scrollOffset);
 
         // 2. Update HUD
         scoreElement.innerText = score;
         highScoreElement.innerText = highScore;
+        coinsElement.innerText = coinsCount;
+        stonesElement.innerText = stoneAmmo;
 
         // 3. Update camera (Horizontal scrolling follows player)
         if (player.x > scrollOffset + canvas.width / 2) {

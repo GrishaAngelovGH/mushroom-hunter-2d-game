@@ -11,7 +11,12 @@
 <body>
     <div id="game-container" class="log-open">
         <div id="ui">
-            Score: <span id="score">0</span> | High: <span id="high-score">0</span>
+            <div class="ui-stats">
+                <div class="stat-badge"><span class="stat-label">⭐ Score:</span> <span id="score" class="stat-value">0</span></div>
+                <div class="stat-badge"><span class="stat-label">🏆 High:</span> <span id="high-score" class="stat-value">0</span></div>
+                <div class="stat-badge"><span class="stat-label">🪙</span> <span id="coins" class="stat-value">0</span></div>
+                <div class="stat-badge"><span class="stat-label">🪨</span> <span id="stones" class="stat-value">0</span></div>
+            </div>
         </div>
 
         <div id="view-stack">
