@@ -2,7 +2,7 @@ import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
 import { 
     gameActive, setGameActive, platforms, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
-    updatePlatforms, player
+    updatePlatforms, player, chatBubble, setChatBubble
 } from './state.js';
 import { keys } from './input.js';
 import { toggleLog } from './ui.js';
@@ -20,6 +20,7 @@ function initLevel() {
     // Seed initial level
     generateWorld(0, 2000);
     setLastGeneratedX(2000);
+    setChatBubble("Let's hunt!", 180);
 }
 
 function resetGame() {
@@ -48,6 +49,7 @@ function gameLoop() {
 
         // 2. Update Entities
         player.update();
+        if (chatBubble.timer > 0) chatBubble.timer--;
 
         // 3. Infinite generation: generate world ahead of view
         if (lastGeneratedX < scrollOffset + CANVAS_WIDTH + 1000) {

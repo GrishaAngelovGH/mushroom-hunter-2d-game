@@ -1,5 +1,6 @@
 import { GRAVITY, FRICTION, MOVE_SPEED, JUMP_FORCE, CANVAS_HEIGHT } from '../config.js';
 import { keys } from '../input.js';
+import { chatBubble } from '../state.js';
 
 export class Player {
     constructor() {
@@ -170,5 +171,58 @@ export class Player {
         ctx.arc(hx, hy - 5, 11, Math.PI, Math.PI * 2);
         ctx.fill();
         ctx.fillRect(hx, hy - 8, 16 * f, 4); // Brim
+
+        // --- CHAT BUBBLE ---
+        if (chatBubble.timer > 0) {
+            const alpha = Math.min(1, chatBubble.timer / 20); // fade out last 20 frames
+            const bx = screenX + this.width / 2;
+            const by = screenY - 20; // Nudged down just a bit
+            const text = chatBubble.text;
+            const padding = 10;
+
+            ctx.save();
+            ctx.font = 'bold 12px Arial';
+            const textW = ctx.measureText(text).width;
+            const bubbleW = textW + padding * 2;
+            const bubbleH = 28;
+            const bubbleX = bx - bubbleW / 2;
+            const bubbleY = by - bubbleH - 12;
+            const tailX = bx;
+            const tailY = by + 3; // Shortened tail
+
+            ctx.globalAlpha = alpha;
+
+            // Bubble body
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1.5;
+            const r2 = 8;
+            ctx.beginPath();
+            ctx.moveTo(bubbleX + r2, bubbleY);
+            ctx.lineTo(bubbleX + bubbleW - r2, bubbleY);
+            ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY, bubbleX + bubbleW, bubbleY + r2);
+            ctx.lineTo(bubbleX + bubbleW, bubbleY + bubbleH - r2);
+            ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY + bubbleH, bubbleX + bubbleW - r2, bubbleY + bubbleH);
+            
+            // Pointier V-shape (Shortened)
+            ctx.lineTo(tailX + 8, bubbleY + bubbleH);
+            ctx.lineTo(tailX, tailY);
+            ctx.lineTo(tailX - 8, bubbleY + bubbleH);
+            
+            ctx.lineTo(bubbleX + r2, bubbleY + bubbleH);
+            ctx.quadraticCurveTo(bubbleX, bubbleY + bubbleH, bubbleX, bubbleY + bubbleH - r2);
+            ctx.lineTo(bubbleX, bubbleY + r2);
+            ctx.quadraticCurveTo(bubbleX, bubbleY, bubbleX + r2, bubbleY);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Bubble text
+            ctx.fillStyle = '#222';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, bx, bubbleY + bubbleH / 2);
+            ctx.restore();
+        }
     }
 }

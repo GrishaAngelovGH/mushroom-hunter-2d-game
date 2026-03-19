@@ -6,6 +6,7 @@ export let coins = [];
 export let enemies = [];
 export let powerups = [];
 export let player = new Player();
+export let chatBubble = { text: '', timer: 0 };
 
 export let lastPlatX = 100;
 export let lastPlatY = 550;
@@ -20,6 +21,11 @@ export function setLastPlatX(val) { lastPlatX = val; }
 export function setLastPlatY(val) { lastPlatY = val; }
 export function setLastGeneratedX(val) { lastGeneratedX = val; }
 export function setScrollOffset(val) { scrollOffset = val; }
+
+export function setChatBubble(text, timer) {
+    chatBubble.text = text;
+    chatBubble.timer = timer;
+}
 
 export function updatePlatforms(newList) { platforms.length = 0; platforms.push(...newList); }
 export function updateCoins(newList) { coins.length = 0; coins.push(...newList); }
@@ -36,4 +42,5 @@ export function resetState() {
     lastGeneratedX = 0;
     scrollOffset = 0;
     player.reset();
+    chatBubble.timer = 0;
 }
