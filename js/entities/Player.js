@@ -22,12 +22,31 @@ export class Player {
     }
 
     update() {
+        const wasGrounded = this.grounded;
+        
+        // Temporary ground check until collision commit (L18)
+        if (this.y >= CANVAS_HEIGHT - 100) {
+            this.grounded = true;
+            this.isJumping = false;
+            if (this.vy > 0) this.vy = 0;
+            this.y = CANVAS_HEIGHT - 100;
+        } else {
+            this.grounded = false;
+        }
+
         // Left/Right Movement
         if (keys['ArrowLeft']) {
             if (this.vx > -MOVE_SPEED) this.vx--;
         }
         if (keys['ArrowRight']) {
             if (this.vx < MOVE_SPEED) this.vx++;
+        }
+
+        // Jump
+        if ((keys['ArrowUp'] || keys[' ']) && !this.isJumping && wasGrounded) {
+            this.vy = JUMP_FORCE;
+            this.isJumping = true;
+            this.grounded = false;
         }
 
         // Apply Physics
