@@ -9,6 +9,7 @@ import { keys } from './input.js';
 import { toggleLog, addLog } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
+import { sounds, initAudio } from './audio.js'; // Import audio helpers
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -41,11 +42,14 @@ function initLevel() {
     setChatBubble("Let's hunt!", 180);
     highScoreElement.innerText = highScore;
     addLog("Welcome to Mushroom Hunter!", 'info');
+    // Initialize audio context on first interaction (handled by audio.js)
+    initAudio(); 
 }
 
 function resetGame() {
     gameOverScreen.style.display = 'none';
     initLevel();
+    addLog("New Game Started!", 'info');
     setGameActive(true);
 }
 
