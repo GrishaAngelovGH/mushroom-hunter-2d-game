@@ -1,31 +1,48 @@
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new AudioContext();
+let audioCtx = null; // Initialize as null
 
-export function playSound(freq, type, duration, volume, sweepFreq = null) {
+// Resume audio on first user interaction
+export function initAudio() {
+    if (!audioCtx) {
+        // Create AudioContext only on first user interaction
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+        console.log("AudioContext created on user interaction.");
+    }
+
     if (audioCtx.state === 'suspended') {
-        // Attempt to resume on interaction if not already started
         audioCtx.resume().then(() => {
             console.log("Audio resumed!"); // For debugging
         });
     }
+}
+
+export function playSound(freq, type, duration, volume, sweepFreq = null) {
+    // Ensure audioCtx is initialized and running
+    if (!audioCtx || audioCtx.state !== 'running') {
+        console.log("AudioContext not ready. Sound will not play until user interaction. (State: " + (audioCtx ? audioCtx.state : 'null') + ")");
+        return; // Do not play sound if context is not initialized or running
+    }
+
+    console.log(`Attempting to play sound: Freq=${freq}, Type=${type}, Duration=${duration}, Volume=${volume}, SweepFreq=${sweepFreq}`);
 
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 
-    osc.type = type;
+    osc.type = type; // 'sine', 'square', 'sawtooth', 'triangle'
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
     if (sweepFreq) {
         osc.frequency.exponentialRampToValueAtTime(sweepFreq, audioCtx.currentTime + duration);
     }
 
-    gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+    gain.gain.setValueAtTime(volume, audioCtx.currentTime); // Volume parameter
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
 
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    gain.connect(audioCtx.destination); // Connects to the speakers
 
     osc.start();
     osc.stop(audioCtx.currentTime + duration);
+    console.log(`Sound scheduled: Freq=${freq}, Duration=${duration}`);
 }
 
 export const sounds = {
@@ -70,15 +87,6 @@ export const sounds = {
         });
     }
 };
-
-// Resume audio on first user interaction
-export function initAudio() {
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume().then(() => {
-            console.log("Audio resumed!"); // For debugging
-        });
-    }
-}
 
 ['mousedown', 'keydown', 'touchstart'].forEach(evt => {
     window.addEventListener(evt, initAudio, { once: true });

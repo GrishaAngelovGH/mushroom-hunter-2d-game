@@ -42,8 +42,7 @@ function initLevel() {
     setChatBubble("Let's hunt!", 180);
     highScoreElement.innerText = highScore;
     addLog("Welcome to Mushroom Hunter!", 'info');
-    // Initialize audio context on first interaction (handled by audio.js)
-    initAudio(); 
+    // Audio context will be initialized by user interaction via event listeners in audio.js
 }
 
 function resetGame() {
