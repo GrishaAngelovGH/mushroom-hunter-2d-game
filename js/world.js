@@ -1,10 +1,18 @@
-import { platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY } from './state.js';
+import { platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY, coins, addCoins } from './state.js';
 import { Platform } from './entities/Platform.js';
 import { Chimney } from './entities/Chimney.js';
+import { Coin } from './entities/Coin.js'; // Import Coin class
 
 export function generateWorld(startX, width) {
     // 1. Ground segment
-    platforms.push(new Platform(startX, 550, width, 50));
+    const groundPlatform = new Platform(startX, 550, width, 50);
+    platforms.push(groundPlatform);
+    // Add coins to the ground segment
+    for (let i = 0; i < width; i += 60) { // Spawn coins every 60px on the ground
+        if (Math.random() > 0.2) { // 80% chance of a coin
+            coins.push(new Coin(startX + i + 30, 550 - 30)); // Position coin above ground
+        }
+    }
 
     // 2. Periodic chimneys on the ground
     if (Math.random() > 0.4) {
@@ -30,6 +38,13 @@ export function generateWorld(startX, width) {
 
         const plat = new Platform(currentX, platY, platWidth, 20);
         platforms.push(plat);
+
+        // Spawn coins on floating platforms as well
+        for (let i = 0; i < platWidth; i += 60) {
+            if (Math.random() > 0.3) { // 70% chance of a coin on floating platforms
+                coins.push(new Coin(currentX + i + platWidth / 2 - 20, platY - 30)); // Position coin above platform
+            }
+        }
 
         setLastPlatY(platY);
         setLastPlatX(currentX + platWidth);
