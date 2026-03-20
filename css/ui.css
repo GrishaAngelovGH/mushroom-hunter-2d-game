@@ -88,6 +88,87 @@
     text-align: center;
 }
 
+/* Game Over Overlay Styles */
+#game-over {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.65);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), inset 0 2px 5px rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  color: #2c3e50;
+  padding: 40px 60px;
+  border-radius: 30px;
+  text-align: center;
+  display: none; /* Initially hidden */
+  z-index: 200;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#game-over h1 {
+  margin: 0 0 10px 0;
+  font-size: 44px;
+  font-weight: 900;
+  color: #2c3e50;
+  text-shadow: 1px 2px 0px rgba(255, 255, 255, 0.8);
+  letter-spacing: 1px;
+}
+
+#game-over p {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 30px 0;
+  color: #34495e;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+}
+
+/* Button styles (can be used for Play Again) */
+button {
+  padding: 12px 30px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #4CAF50, #45a049);
+  border: 2px solid #3d8b40;
+  color: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4), inset 0 2px 2px rgba(255, 255, 255, 0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(76, 175, 80, 0.5), inset 0 2px 2px rgba(255, 255, 255, 0.4);
+  background: linear-gradient(to bottom, #50C855, #49ad4e);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(76, 175, 80, 0.4);
+}
+
+/* Specific styling for the 'Play Again' button if needed */
+#game-over button {
+    background: linear-gradient(to bottom, #3498DB, #2980B9); /* Blue for Play Again */
+    border-color: #2980B9;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4), inset 0 2px 2px rgba(255, 255, 255, 0.4);
+}
+
+#game-over button:hover {
+    background: linear-gradient(to bottom, #3498DB, #2980B9);
+    box-shadow: 0 6px 15px rgba(52, 152, 219, 0.5), inset 0 2px 2px rgba(255, 255, 255, 0.4);
+}
+
+#game-over button:active {
+    box-shadow: 0 2px 5px rgba(52, 152, 219, 0.4);
+}
+
 /* Bottom Log Panel */
 #log-panel {
     box-sizing: border-box;
