@@ -45,6 +45,7 @@ function initLevel() {
 function resetGame() {
     gameOverScreen.style.display = 'none';
     initLevel();
+    addLog("New Game Started!", 'info');
     setGameActive(true);
 }
 
