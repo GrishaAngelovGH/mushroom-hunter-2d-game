@@ -6,12 +6,11 @@ export function initAudio() {
         // Create AudioContext only on first user interaction
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContext();
-        console.log("AudioContext created on user interaction.");
     }
 
     if (audioCtx.state === 'suspended') {
         audioCtx.resume().then(() => {
-            console.log("Audio resumed!"); // For debugging
+            // No longer needed
         });
     }
 }
@@ -19,11 +18,8 @@ export function initAudio() {
 export function playSound(freq, type, duration, volume, sweepFreq = null) {
     // Ensure audioCtx is initialized and running
     if (!audioCtx || audioCtx.state !== 'running') {
-        console.log("AudioContext not ready. Sound will not play until user interaction. (State: " + (audioCtx ? audioCtx.state : 'null') + ")");
         return; // Do not play sound if context is not initialized or running
     }
-
-    console.log(`Attempting to play sound: Freq=${freq}, Type=${type}, Duration=${duration}, Volume=${volume}, SweepFreq=${sweepFreq}`);
 
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -38,11 +34,11 @@ export function playSound(freq, type, duration, volume, sweepFreq = null) {
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
 
     osc.connect(gain);
+    osc.connect(audioCtx.destination); // Connects to the speakers
     gain.connect(audioCtx.destination); // Connects to the speakers
 
     osc.start();
     osc.stop(audioCtx.currentTime + duration);
-    console.log(`Sound scheduled: Freq=${freq}, Duration=${duration}`);
 }
 
 export const sounds = {

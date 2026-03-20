@@ -2,6 +2,7 @@ import { GRAVITY, FRICTION, MOVE_SPEED, JUMP_FORCE, CANVAS_HEIGHT } from '../con
 import { keys } from '../input.js';
 import { chatBubble, platforms } from '../state.js';
 import { endGame } from '../main.js';
+import { sounds } from '../audio.js'; // Import sounds for jump effect
 
 export class Player {
     constructor() {
@@ -41,6 +42,7 @@ export class Player {
             this.vy = JUMP_FORCE;
             this.isJumping = true;
             this.grounded = false;
+            sounds.jump(); // Play jump sound
         }
 
         // Apply movement
