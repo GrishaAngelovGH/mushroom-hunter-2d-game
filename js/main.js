@@ -40,12 +40,12 @@ function initLevel() {
     setLastGeneratedX(2000);
     setChatBubble("Let's hunt!", 180);
     highScoreElement.innerText = highScore;
+    addLog("Welcome to Mushroom Hunter!", 'info');
 }
 
 function resetGame() {
     gameOverScreen.style.display = 'none';
     initLevel();
-    addLog("New Game Started!", 'info');
     setGameActive(true);
 }
 
