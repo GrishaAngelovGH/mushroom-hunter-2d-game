@@ -3,12 +3,13 @@ import {
     gameActive, setGameActive, platforms, coins, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, updateCoins, player, chatBubble, setChatBubble,
-    score, highScore, coinsCount, stoneAmmo
+    score, highScore, coinsCount, stoneAmmo, addCoins, addScore
 } from './state.js';
 import { keys } from './input.js';
 import { toggleLog, addLog } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
+import { sounds } from './audio.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -89,6 +90,15 @@ function gameLoop() {
 
         coins.forEach(c => {
             if (!c.collected) c.update();
+        });
+
+        coins.forEach(c => {
+            if (c.collected || !c.hitsPlayer(player)) return;
+            c.collected = true;
+            addScore(1);
+            addCoins(1);
+            sounds.coin();
+            addLog(`+1 Coin! Total Coins: ${coinsCount}`, 'coin');
         });
 
         // 5. Infinite generation: generate world ahead of player
