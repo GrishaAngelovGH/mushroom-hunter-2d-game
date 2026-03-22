@@ -1,15 +1,14 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
 import { 
-    gameActive, setGameActive, platforms, resetState, 
+    gameActive, setGameActive, platforms, coins, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
-    updatePlatforms, player, chatBubble, setChatBubble,
+    updatePlatforms, updateCoins, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo
 } from './state.js';
 import { keys } from './input.js';
 import { toggleLog, addLog } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
-import { sounds, initAudio } from './audio.js'; // Import audio helpers
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -88,6 +87,10 @@ function gameLoop() {
         player.update();
         if (chatBubble.timer > 0) chatBubble.timer--;
 
+        coins.forEach(c => {
+            if (!c.collected) c.update();
+        });
+
         // 5. Infinite generation: generate world ahead of player
         if (player.x + canvas.width > lastGeneratedX) {
             generateWorld(lastGeneratedX, 2000);
@@ -97,10 +100,12 @@ function gameLoop() {
         // 6. Entity Pruning: remove off-screen entities for performance
         if (platforms.length > 50) {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
+            updateCoins(coins.filter(c => c.x > scrollOffset - 800));
         }
 
         // 7. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
+        coins.forEach(c => c.draw(ctx, scrollOffset));
         player.draw(ctx, scrollOffset);
 
         requestAnimationFrame(gameLoop);

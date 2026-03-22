@@ -39,8 +39,16 @@ export class Coin {
         ctx.closePath();
     }
 
-    // Update method for animation or other logic if needed
+    /** World-space overlap test for pickup (base y, not bob — matches legacy/index.html). */
+    hitsPlayer(player) {
+        if (this.collected) return false;
+        const pcx = player.x + player.width / 2;
+        const pcy = player.y + player.height / 2;
+        const dist = Math.hypot(pcx - this.x, pcy - this.y);
+        return dist < player.width / 2 + this.radius;
+    }
+
     update() {
-        this.bob += 0.06; // Animate bobbing
+        this.bob += 0.1;
     }
 }
