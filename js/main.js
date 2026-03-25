@@ -1,8 +1,8 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
 import { 
-    gameActive, setGameActive, platforms, coins, resetState, 
+    gameActive, setGameActive, platforms, coins, enemies, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
-    updatePlatforms, updateCoins, player, chatBubble, setChatBubble,
+    updatePlatforms, updateCoins, updateEnemies, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo, addCoins, addScore
 } from './state.js';
 import { keys } from './input.js';
@@ -92,6 +92,8 @@ function gameLoop() {
             if (!c.collected) c.update();
         });
 
+        enemies.forEach(e => e.update());
+
         coins.forEach(c => {
             if (c.collected || !c.hitsPlayer(player)) return;
             c.collected = true;
@@ -111,11 +113,13 @@ function gameLoop() {
         if (platforms.length > 50) {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
             updateCoins(coins.filter(c => c.x > scrollOffset - 800));
+            updateEnemies(enemies.filter(e => e.x + e.width > scrollOffset - 800));
         }
 
         // 7. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
         coins.forEach(c => c.draw(ctx, scrollOffset));
+        enemies.forEach(e => e.draw(ctx, scrollOffset));
         player.draw(ctx, scrollOffset);
 
         requestAnimationFrame(gameLoop);

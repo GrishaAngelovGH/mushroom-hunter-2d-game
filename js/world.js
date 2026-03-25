@@ -1,7 +1,8 @@
-import { platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY, coins } from './state.js';
+import { platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY, coins, enemies } from './state.js';
 import { Platform } from './entities/Platform.js';
 import { Chimney } from './entities/Chimney.js';
-import { Coin } from './entities/Coin.js'; // Import Coin class
+import { Coin } from './entities/Coin.js';
+import { Enemy } from './entities/Enemy.js';
 
 export function generateWorld(startX, width) {
     // 1. Ground segment
@@ -42,6 +43,11 @@ export function generateWorld(startX, width) {
         // At most one coin per platform, not guaranteed
         if (Math.random() < 0.3) {
             coins.push(new Coin(currentX + platWidth / 2, platY - 30));
+        }
+
+        if (Math.random() > 0.6) {
+            const patrolRange = Math.max(10, platWidth - 50);
+            enemies.push(new Enemy(currentX + 10, platY - 40, patrolRange));
         }
 
         setLastPlatY(platY);
