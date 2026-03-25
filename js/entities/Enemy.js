@@ -11,9 +11,11 @@ export class Enemy {
         this.speed = 1.5 + Math.random();
         this.direction = 1;
         this.animPhase = Math.random() * Math.PI * 2;
+        this.alive = true;
     }
 
     update() {
+        if (!this.alive) return;
         this.animPhase += 0.05 * this.speed;
         if (this.range > 0) {
             this.x += this.speed * this.direction;
@@ -24,6 +26,7 @@ export class Enemy {
     }
 
     draw(ctx, scrollOffset) {
+        if (!this.alive) return;
         const screenX = this.x - scrollOffset;
         const bob = Math.sin(this.animPhase) * 1.5;
         const scale = this.width / 40;

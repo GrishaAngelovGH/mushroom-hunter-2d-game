@@ -1,4 +1,4 @@
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from './config.js';
+import { CANVAS_WIDTH, CANVAS_HEIGHT, JUMP_FORCE } from './config.js';
 import { 
     gameActive, setGameActive, platforms, coins, enemies, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
@@ -93,6 +93,25 @@ function gameLoop() {
         });
 
         enemies.forEach(e => e.update());
+
+        enemies.forEach(e => {
+            if (!e.alive) return;
+            if (player.x >= e.x + e.width || player.x + player.width <= e.x ||
+                player.y >= e.y + e.height || player.y + player.height <= e.y) {
+                return;
+            }
+            const isAbove = player.y + player.height / 2 < e.y;
+            const isFalling = player.vy >= 0;
+            if (isAbove || (isFalling && player.y + player.height < e.y + e.height * 0.8)) {
+                player.vy = JUMP_FORCE / 1.5;
+                const points = e.isElite ? 10 : 5;
+                addScore(points);
+                if (e.isElite) sounds.eliteHit();
+                else sounds.stomp();
+                addLog(e.isElite ? '🌟 Elite Stomped! +10 Points' : 'Stomped! +5 Points', 'stomp');
+                e.alive = false;
+            }
+        });
 
         coins.forEach(c => {
             if (c.collected || !c.hitsPlayer(player)) return;
