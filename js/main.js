@@ -109,7 +109,7 @@ function gameLoop() {
                 if (e.isElite) sounds.eliteHit();
                 else sounds.stomp();
                 addLog(e.isElite ? '🌟 Elite Stomped! +10 Points' : 'Stomped! +5 Points', 'stomp');
-                e.alive = false;
+                e.respawn();
             }
         });
 

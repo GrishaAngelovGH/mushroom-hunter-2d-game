@@ -1,3 +1,6 @@
+import { platforms, player } from '../state.js';
+import { CANVAS_WIDTH } from '../config.js';
+
 /** Mushroom enemy: patrols between startX and startX + range on a platform. */
 export class Enemy {
     constructor(x, y, range, isElite = false) {
@@ -119,5 +122,27 @@ export class Enemy {
         ctx.stroke();
 
         ctx.restore();
+    }
+
+    /** Move to a platform ahead of the player (falls back to any platform). */
+    respawn() {
+        if (platforms.length === 0) return;
+
+        const halfW = CANVAS_WIDTH / 2;
+        const ahead = platforms.filter(p => p.x > player.x + halfW);
+        const target = ahead.length > 0
+            ? ahead[Math.floor(Math.random() * ahead.length)]
+            : platforms[Math.floor(Math.random() * platforms.length)];
+
+        if (!target) return;
+
+        this.y = target.y - this.height;
+        const maxStart = Math.max(0, target.width - this.width);
+        this.startX = target.x + Math.random() * maxStart;
+        this.range = Math.max(0, target.x + target.width - this.startX - 5);
+        this.x = this.startX;
+        if (this.range < 10) this.range = 0;
+        this.direction = 1;
+        this.alive = true;
     }
 }
