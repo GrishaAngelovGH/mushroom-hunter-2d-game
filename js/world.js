@@ -45,7 +45,8 @@ export function generateWorld(startX, width) {
             coins.push(new Coin(currentX + platWidth / 2, platY - 30));
         }
 
-        if (Math.random() > 0.6) {
+        // ~75% of floating platforms get an enemy (was ~40% via > 0.6)
+        if (Math.random() < 0.75) {
             const patrolRange = Math.max(10, platWidth - 50);
             enemies.push(new Enemy(currentX + 10, platY - 40, patrolRange));
         }
