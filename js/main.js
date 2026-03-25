@@ -31,7 +31,13 @@ export function endGame(win = false) {
     gameOverScreen.style.display = 'block';
     statusText.innerText = win ? "You Win!" : "Game Over!";
     finalScoreElement.innerText = score;
-    addLog(win ? "Victory!" : "Game Over.", win ? 'win' : 'info');
+    if (win) {
+        sounds.win();
+        addLog(`Victory! Final Score: ${score}`, 'win');
+    } else {
+        sounds.gameOver();
+        addLog(`Game Over. Final Score: ${score}`, 'info');
+    }
 }
 
 function initLevel() {
@@ -110,6 +116,8 @@ function gameLoop() {
                 else sounds.stomp();
                 addLog(e.isElite ? '🌟 Elite Stomped! +10 Points' : 'Stomped! +5 Points', 'stomp');
                 e.respawn();
+            } else {
+                endGame(false);
             }
         });
 
