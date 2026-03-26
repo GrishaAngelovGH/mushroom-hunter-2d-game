@@ -1,5 +1,7 @@
-import { platforms, player, registerRegularStompForEliteHunt } from '../state.js';
+import { platforms, player, registerRegularStompForEliteHunt, setChatBubble } from '../state.js';
 import { CANVAS_WIDTH } from '../config.js';
+import { addLog } from '../ui.js';
+import { sounds } from '../audio.js';
 
 /** Mushroom enemy: patrols between startX and startX + range on a platform. */
 export class Enemy {
@@ -131,6 +133,11 @@ export class Enemy {
         if (!this.isElite) {
             const n = registerRegularStompForEliteHunt();
             this.isElite = n > 0 && n % 20 === 0;
+            if (this.isElite) {
+                setChatBubble("Elite mushroom coming!", 180);
+                sounds.eliteSpawn();
+                addLog("🌟 Elite Spotted!", 'powerup');
+            }
         } else {
             this.isElite = false;
         }
