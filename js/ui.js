@@ -24,8 +24,8 @@ export function addLog(message, type = 'info') {
     entry.innerHTML = `> [${time}] ${message}`;
     eventPanel.appendChild(entry);
 
-    // Prune history to last 5 entries
-    if (eventPanel.children.length > 5) {
+    // Prune history to last 3 entries
+    if (eventPanel.children.length > 3) {
         eventPanel.removeChild(eventPanel.firstChild);
     }
 }

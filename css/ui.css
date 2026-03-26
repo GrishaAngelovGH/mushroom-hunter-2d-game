@@ -196,7 +196,7 @@ button:active {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    height: 100px;
+    height: 80px;
     opacity: 1;
     font-size: 13px;
     line-height: 1.4;
