@@ -14,6 +14,14 @@ export let highScore = parseInt(localStorage.getItem('mushroomHighScore')) || 0;
 export let coinsCount = 0;
 export let stoneAmmo = 0;
 
+/** Regular stomps toward Elite Hunt (every 20th respawns as elite). */
+export let enemiesStompedCount = 0;
+
+export function registerRegularStompForEliteHunt() {
+    enemiesStompedCount++;
+    return enemiesStompedCount;
+}
+
 export let lastPlatX = 100;
 export let lastPlatY = 550;
 export let lastGeneratedX = 0;
@@ -69,6 +77,7 @@ export function resetState() {
     score = 0;
     coinsCount = 0;
     stoneAmmo = 0;
+    enemiesStompedCount = 0;
     player.reset();
     chatBubble.timer = 0;
 }

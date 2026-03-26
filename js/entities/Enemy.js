@@ -1,4 +1,4 @@
-import { platforms, player } from '../state.js';
+import { platforms, player, registerRegularStompForEliteHunt } from '../state.js';
 import { CANVAS_WIDTH } from '../config.js';
 
 /** Mushroom enemy: patrols between startX and startX + range on a platform. */
@@ -127,6 +127,13 @@ export class Enemy {
     /** Move to a platform ahead of the player (falls back to any platform). */
     respawn() {
         if (platforms.length === 0) return;
+
+        if (!this.isElite) {
+            const n = registerRegularStompForEliteHunt();
+            this.isElite = n > 0 && n % 20 === 0;
+        } else {
+            this.isElite = false;
+        }
 
         const halfW = CANVAS_WIDTH / 2;
         const ahead = platforms.filter(p => p.x > player.x + halfW);
