@@ -3,10 +3,10 @@ import {
     gameActive, setGameActive, platforms, coins, enemies, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, updateCoins, updateEnemies, player, chatBubble, setChatBubble,
-    score, highScore, coinsCount, stoneAmmo, addCoins, addScore
+    score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount
 } from './state.js';
 import { keys } from './input.js';
-import { toggleLog, addLog } from './ui.js';
+import { toggleLog, addLog, drawEliteProgressBar } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
 import { sounds } from './audio.js';
@@ -148,6 +148,9 @@ function gameLoop() {
         coins.forEach(c => c.draw(ctx, scrollOffset));
         enemies.forEach(e => e.draw(ctx, scrollOffset));
         player.draw(ctx, scrollOffset);
+
+        // 8. Draw UI Overlays (Canvas HUD)
+        drawEliteProgressBar(ctx, enemiesStompedCount);
 
         requestAnimationFrame(gameLoop);
     } catch (e) {

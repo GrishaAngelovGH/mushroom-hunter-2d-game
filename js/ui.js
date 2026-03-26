@@ -36,3 +36,38 @@ export function toggleLog() {
     const isHidden = panel.classList.toggle('hidden');
     container.classList.toggle('log-open', !isHidden);
 }
+
+export function drawEliteProgressBar(ctx, stompsCount) {
+    const margin = 20;
+    const barWidth = 220;
+    const barHeight = 10;
+    const x = margin;
+    const y = 582; // Closer to the bottom edge
+
+    // Background
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(x, y, barWidth, barHeight);
+
+    // Progress Fill
+    const progress = (stompsCount % 20) / 20;
+    if (progress > 0) {
+        const fillWidth = barWidth * progress;
+        const gradient = ctx.createLinearGradient(x, y, x + barWidth, y);
+        gradient.addColorStop(0, '#F1C40F');
+        gradient.addColorStop(1, '#FFD700');
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x, y, fillWidth, barHeight);
+
+        // Subtle glow
+        ctx.strokeStyle = '#F1C40F66';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, fillWidth, barHeight);
+    }
+
+    // Text
+    ctx.fillStyle = '#FFF';
+    ctx.font = 'bold 12px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`ELITE HUNT [${stompsCount % 20}/20]`, x + 5, y - 6);
+}
