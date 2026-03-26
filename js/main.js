@@ -3,8 +3,10 @@ import {
     gameActive, setGameActive, platforms, coins, enemies, resetState, 
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, updateCoins, updateEnemies, player, chatBubble, setChatBubble,
-    score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount
+    score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount,
+    stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown
 } from './state.js';
+import { Stone } from './entities/Stone.js';
 import { keys } from './input.js';
 import { toggleLog, addLog, drawEliteProgressBar } from './ui.js';
 import { generateWorld } from './world.js';
@@ -65,6 +67,17 @@ window.addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() === 'p') {
         toggleLog();
     }
+
+    if (!gameActive) return;
+    const key = e.key.toLowerCase();
+
+    // Throw stone with Z or X
+    if ((key === 'z' || key === 'x') && stoneAmmo > 0) {
+        consumeStoneAmmo();
+        stones.push(new Stone(player.x + player.width / 2, player.y + player.height / 2, canvas.height, player.facing));
+        sounds.throw();
+        incrementTotalStonesThrown();
+    }
 });
 
 function gameLoop() {
@@ -99,6 +112,7 @@ function gameLoop() {
         });
 
         enemies.forEach(e => e.update());
+        stones.forEach(s => s.update(scrollOffset, canvas.width));
 
         enemies.forEach(e => {
             if (!e.alive) return;
@@ -141,12 +155,14 @@ function gameLoop() {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
             updateCoins(coins.filter(c => c.x > scrollOffset - 800));
             updateEnemies(enemies.filter(e => e.x + e.width > scrollOffset - 800));
+            updateStones(stones.filter(s => s.alive));
         }
 
         // 7. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
         coins.forEach(c => c.draw(ctx, scrollOffset));
         enemies.forEach(e => e.draw(ctx, scrollOffset));
+        stones.forEach(s => s.draw(ctx, scrollOffset));
         player.draw(ctx, scrollOffset);
 
         // 8. Draw UI Overlays (Canvas HUD)
