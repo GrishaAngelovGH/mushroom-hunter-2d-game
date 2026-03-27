@@ -79,8 +79,10 @@ window.addEventListener('keydown', (e) => {
             addStoneAmmo(STONES_PER_BUY);
             sounds.powerup();
             addLog(`Bought ${STONES_PER_BUY} stones for ${STONE_COST} coins!`, 'powerup');
+            setChatBubble(`-${STONE_COST} 🪙, +${STONES_PER_BUY} 🪨`, 120);
         } else {
             addLog(`Not enough coins! Need ${STONE_COST}.`, 'info');
+            setChatBubble(`Need ${STONE_COST} 🪙!`, 60);
         }
     }
 

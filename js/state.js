@@ -67,7 +67,14 @@ export function addScore(amount) {
 }
 
 export function addCoins(amount) {
+    const previous = coinsCount;
     coinsCount += amount;
+
+    // Stone purchase prompt
+    const nextThreshold = Math.floor(coinsCount / STONE_COST) * STONE_COST;
+    if (previous < nextThreshold && nextThreshold > 0) {
+        setChatBubble(`Buy stones! (${STONE_COST}🪙) [B]`, 150);
+    }
 }
 
 export function updatePlatforms(newList) { platforms.length = 0; platforms.push(...newList); }
