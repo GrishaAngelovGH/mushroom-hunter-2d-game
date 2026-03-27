@@ -1,8 +1,9 @@
-import { platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY, coins, enemies } from './state.js';
+import { platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY, coins, enemies, powerups } from './state.js';
 import { Platform } from './entities/Platform.js';
 import { Chimney } from './entities/Chimney.js';
 import { Coin } from './entities/Coin.js';
 import { Enemy } from './entities/Enemy.js';
+import { PowerUp } from './entities/PowerUp.js';
 
 export function generateWorld(startX, width) {
     // 1. Ground segment
@@ -24,7 +25,7 @@ export function generateWorld(startX, width) {
 
     // 3. Floating platforms
     let currentX = lastPlatX + 60 + Math.random() * 60; // Max gap ~120
-    
+
     while (currentX < startX + width - 150) {
         const platWidth = 100 + Math.random() * 120;
 
@@ -49,6 +50,11 @@ export function generateWorld(startX, width) {
         if (Math.random() < 0.75) {
             const patrolRange = Math.max(10, platWidth - 50);
             enemies.push(new Enemy(currentX + 10, platY - 40, patrolRange));
+        }
+
+        // Rare stone powerup
+        if (Math.random() < 0.15) {
+            powerups.push(new PowerUp(currentX + platWidth / 2, platY - 36));
         }
 
         setLastPlatY(platY);
