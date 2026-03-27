@@ -9,7 +9,7 @@ import {
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import { keys } from './input.js';
-import { toggleLog, addLog, drawEliteProgressBar } from './ui.js';
+import { toggleLog, addLog, clearLog, drawEliteProgressBar } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
 import { sounds } from './audio.js';
@@ -45,6 +45,7 @@ export function endGame(win = false) {
 
 function initLevel() {
     resetState();
+    clearLog();
     // Seed initial level
     generateWorld(0, 2000);
     setLastGeneratedX(2000);

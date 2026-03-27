@@ -4,7 +4,7 @@ export function addLog(message, type = 'info') {
 
     const entry = document.createElement('div');
     entry.className = 'log-entry';
-    
+
     const colors = {
         info: '#FFF',
         coin: '#F1C40F',
@@ -13,14 +13,14 @@ export function addLog(message, type = 'info') {
         powerup: '#FF8C00',
         stone: '#A0A0A0'
     };
-    
+
     entry.style.color = colors[type] || '#FFF';
-    const time = new Date().toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
+    const time = new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
     });
-    
+
     entry.innerHTML = `> [${time}] ${message}`;
     eventPanel.appendChild(entry);
 
@@ -28,6 +28,11 @@ export function addLog(message, type = 'info') {
     if (eventPanel.children.length > 3) {
         eventPanel.removeChild(eventPanel.firstChild);
     }
+}
+
+export function clearLog() {
+    const eventPanel = document.getElementById('event-panel');
+    if (eventPanel) eventPanel.innerHTML = '';
 }
 
 export function toggleLog() {
