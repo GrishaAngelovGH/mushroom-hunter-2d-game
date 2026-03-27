@@ -114,6 +114,22 @@ function gameLoop() {
         enemies.forEach(e => e.update());
         stones.forEach(s => s.update(scrollOffset, canvas.width));
 
+        // Stone-enemy collisions
+        stones.forEach(s => {
+            if (!s.alive) return;
+            enemies.forEach(e => {
+                if (s.x > e.x && s.x < e.x + e.width && s.y > e.y && s.y < e.y + e.height && e.alive) {
+                    s.alive = false;
+                    const points = e.isElite ? 20 : 10;
+                    addScore(points);
+                    if (e.isElite) sounds.eliteHit();
+                    else sounds.stomp();
+                    addLog(e.isElite ? "🌟 Elite Stone Hit! +20 Points" : "Stone Hit! +10 Points", 'stone');
+                    e.respawn();
+                }
+            });
+        });
+
         enemies.forEach(e => {
             if (!e.alive) return;
             if (player.x >= e.x + e.width || player.x + player.width <= e.x ||
