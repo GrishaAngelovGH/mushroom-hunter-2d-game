@@ -49,7 +49,7 @@ function initLevel() {
     // Seed initial level
     generateWorld(0, 2000);
     setLastGeneratedX(2000);
-    setChatBubble("Let's hunt!", 180);
+    setChatBubble("Let's go!", 180);
     highScoreElement.innerText = highScore;
     addLog("Welcome to Mushroom Hunter!", 'info');
     // Audio context will be initialized by user interaction via event listeners in audio.js

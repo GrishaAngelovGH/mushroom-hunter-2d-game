@@ -54,9 +54,9 @@ export function setChatBubble(text, timer) {
 export function addScore(amount) {
     const oldScore = score;
     score += amount;
-    
+
     if (score > 0 && Math.floor(score / 100) > Math.floor(oldScore / 100)) {
-        setChatBubble("Milestone reached!", 150);
+        setChatBubble("Yes, another 100 points reached!", 180);
         addLog(`Great work! ${Math.floor(score / 100) * 100} points!`, 'win');
     }
 
@@ -73,7 +73,7 @@ export function addCoins(amount) {
     // Stone purchase prompt
     const nextThreshold = Math.floor(coinsCount / STONE_COST) * STONE_COST;
     if (previous < nextThreshold && nextThreshold > 0) {
-        setChatBubble(`Buy stones! (${STONE_COST}🪙) [B]`, 150);
+        setChatBubble(`Press B – buy ${STONES_PER_BUY} 🪨 for ${STONE_COST} 🪙!`, 210);
     }
 }
 

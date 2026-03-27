@@ -134,7 +134,7 @@ export class Enemy {
             const n = registerRegularStompForEliteHunt();
             this.isElite = n > 0 && n % 20 === 0;
             if (this.isElite) {
-                setChatBubble("Elite mushroom coming!", 180);
+                setChatBubble("Elite mushroom coming!", 150);
                 sounds.eliteSpawn();
                 addLog("🌟 Elite Spotted!", 'powerup');
             }
