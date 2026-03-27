@@ -1,8 +1,8 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT, JUMP_FORCE } from './config.js';
-import { 
-    gameActive, setGameActive, platforms, coins, enemies, resetState, 
+import {
+    gameActive, setGameActive, platforms, coins, enemies, powerups, resetState,
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
-    updatePlatforms, updateCoins, updateEnemies, player, chatBubble, setChatBubble,
+    updatePlatforms, updateCoins, updateEnemies, updatePowerups, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount,
     stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown,
     STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo
@@ -103,7 +103,7 @@ function gameLoop() {
 
     try {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+
         // 1. Draw Background (Parallax)
         drawBackground(ctx, canvas, scrollOffset);
 
@@ -124,6 +124,18 @@ function gameLoop() {
 
         coins.forEach(c => {
             if (!c.collected) c.update();
+        });
+
+        powerups.forEach(pu => {
+            if (!pu.collected) {
+                const dist = Math.sqrt(Math.pow(player.x + player.width / 2 - pu.x, 2) + Math.pow(player.y + player.height / 2 - pu.y, 2));
+                if (dist < player.width / 2 + pu.radius) {
+                    pu.collected = true;
+                    addStoneAmmo(5);
+                    sounds.powerup();
+                    addLog("Power Up! +5 Stones collected!", 'powerup');
+                }
+            }
         });
 
         enemies.forEach(e => e.update());
@@ -186,12 +198,14 @@ function gameLoop() {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
             updateCoins(coins.filter(c => c.x > scrollOffset - 800));
             updateEnemies(enemies.filter(e => e.x + e.width > scrollOffset - 800));
+            updatePowerups(powerups.filter(pu => pu.x > scrollOffset - 800));
             updateStones(stones.filter(s => s.alive));
         }
 
         // 7. Draw Entities
         platforms.forEach(p => p.draw(ctx, scrollOffset));
         coins.forEach(c => c.draw(ctx, scrollOffset));
+        powerups.forEach(pu => pu.draw(ctx, scrollOffset));
         enemies.forEach(e => e.draw(ctx, scrollOffset));
         stones.forEach(s => s.draw(ctx, scrollOffset));
         player.draw(ctx, scrollOffset);
