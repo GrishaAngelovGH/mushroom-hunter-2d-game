@@ -4,7 +4,8 @@ import {
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, updateCoins, updateEnemies, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount,
-    stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown
+    stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown,
+    STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import { keys } from './input.js';
@@ -70,6 +71,18 @@ window.addEventListener('keydown', (e) => {
 
     if (!gameActive) return;
     const key = e.key.toLowerCase();
+
+    // Buy stones with B
+    if (key === 'b') {
+        if (coinsCount >= STONE_COST) {
+            deductCoins(STONE_COST);
+            addStoneAmmo(STONES_PER_BUY);
+            sounds.powerup();
+            addLog(`Bought ${STONES_PER_BUY} stones for ${STONE_COST} coins!`, 'powerup');
+        } else {
+            addLog(`Not enough coins! Need ${STONE_COST}.`, 'info');
+        }
+    }
 
     // Throw stone with Z or X
     if ((key === 'z' || key === 'x') && stoneAmmo > 0) {
