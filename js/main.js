@@ -99,13 +99,13 @@ window.addEventListener('keydown', (e) => {
 });
 
 function gameLoop() {
+    updateGamepadInput();
     if (!gameActive) {
         requestAnimationFrame(gameLoop);
         return;
     }
 
     try {
-        const gamepad = updateGamepadInput();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // 1. Draw Background (Parallax)

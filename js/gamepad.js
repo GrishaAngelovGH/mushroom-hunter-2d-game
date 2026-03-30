@@ -81,7 +81,7 @@ export function updateGamepadInput() {
     // Share: 'Share' (Button 8) - Toggle Log
     checkPress(8, () => {
         if (gameActive) {
-            toggleLog();
+            window.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'p' }));
         } else {
             document.getElementById('restart-btn')?.click();
         }
