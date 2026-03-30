@@ -1,4 +1,8 @@
 import { keys } from './input.js';
+import { gameActive } from './state.js';
+import { toggleLog } from './ui.js';
+
+let gamepadButtons = {};
 
 export function updateGamepadInput() {
     const gamepads = navigator.getGamepads();
@@ -30,6 +34,63 @@ export function updateGamepadInput() {
     keys['ArrowRight'] = axisRight || dPadRight;
     keys['ArrowUp'] = dPadUp || buttonJump;
     keys[' '] = buttonJump; // Space alias
+
+    // 4. One-off Actions: Helper to detect "New" presses
+    const checkPress = (index, callback) => {
+        const btn = gp.buttons[index];
+        if (!btn) return;
+        const isPressed = btn.pressed;
+        if (isPressed && !gamepadButtons[index]) {
+            callback();
+        }
+        gamepadButtons[index] = isPressed;
+    };
+
+    // Buy Stones: 'Triangle' (Button 3)
+    checkPress(3, () => {
+        if (gameActive) {
+            window.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'b' }));
+        } else {
+            document.getElementById('restart-btn')?.click();
+        }
+    });
+
+    // Throw Stone: 'Square' (Button 2)
+    checkPress(2, () => {
+        if (gameActive) {
+            window.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'z' }));
+        }
+    });
+
+    // Jump / Confirm: 'Cross' (Button 0)
+    checkPress(0, () => {
+        if (!gameActive) {
+            document.getElementById('restart-btn')?.click();
+        }
+    });
+
+    // Options: 'Options' (Button 9) - Toggle Fullscreen
+    checkPress(9, () => {
+        if (gameActive) {
+            window.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'f' }));
+        } else {
+            document.getElementById('restart-btn')?.click();
+        }
+    });
+
+    // Share: 'Share' (Button 8) - Toggle Log
+    checkPress(8, () => {
+        if (gameActive) {
+            toggleLog();
+        } else {
+            document.getElementById('restart-btn')?.click();
+        }
+    });
+
+    // L1: 'L1' (Button 4) - Toggle Rules
+    checkPress(4, () => {
+        window.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'r' }));
+    });
 
     return gp;
 }
