@@ -2,6 +2,7 @@ import { Player } from './entities/Player.js';
 import { addLog } from './ui.js';
 
 export let gameActive = true;
+export let vibrationsEnabled = localStorage.getItem('mushroomVibrationsEnabled') !== 'false';
 export let platforms = [];
 export let coins = [];
 export let enemies = [];

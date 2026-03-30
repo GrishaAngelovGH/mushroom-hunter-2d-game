@@ -1,8 +1,21 @@
 import { keys } from './input.js';
-import { gameActive } from './state.js';
+import { gameActive, vibrationsEnabled } from './state.js';
 import { toggleLog } from './ui.js';
 
 let gamepadButtons = {};
+
+export function vibrate(duration = 200, strong = 0.5, weak = 0.5, force = false) {
+    if (!vibrationsEnabled && !force) return;
+    const gamepad = navigator.getGamepads()[0];
+    if (gamepad && gamepad.vibrationActuator) {
+        gamepad.vibrationActuator.playEffect("dual-rumble", {
+            startDelay: 0,
+            duration: duration,
+            weakMagnitude: weak,
+            strongMagnitude: strong
+        }).catch(() => { });
+    }
+}
 
 export function updateGamepadInput() {
     const gamepads = navigator.getGamepads();

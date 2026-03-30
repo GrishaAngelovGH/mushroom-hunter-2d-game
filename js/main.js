@@ -14,7 +14,7 @@ import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
 import { sounds } from './audio.js';
 
-import { updateGamepadInput } from './gamepad.js';
+import { updateGamepadInput, vibrate } from './gamepad.js';
 
 // Gamepad connection handling
 window.addEventListener("gamepadconnected", refreshControlHints);
@@ -51,9 +51,11 @@ export function endGame(win = false) {
     if (win) {
         sounds.win();
         addLog(`Victory! Final Score: ${score}`, 'win');
+        vibrate(400, 0.8, 0.2, true);
     } else {
         sounds.gameOver();
         addLog(`Game Over. Final Score: ${score}`, 'info');
+        vibrate(400, 0.8, 0.2, true);
     }
 }
 
@@ -167,6 +169,7 @@ function gameLoop() {
                     addScore(points);
                     if (e.isElite) sounds.eliteHit();
                     else sounds.stomp();
+                    vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
                     addLog(e.isElite ? "🌟 Elite Stone Hit! +20 Points" : "Stone Hit! +10 Points", 'stone');
                     e.respawn();
                 }
@@ -187,6 +190,7 @@ function gameLoop() {
                 addScore(points);
                 if (e.isElite) sounds.eliteHit();
                 else sounds.stomp();
+                vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
                 addLog(e.isElite ? '🌟 Elite Stomped! +10 Points' : 'Stomped! +5 Points', 'stomp');
                 e.respawn();
             } else {
@@ -200,6 +204,7 @@ function gameLoop() {
             addScore(1);
             addCoins(1);
             sounds.coin();
+            vibrate(50, 0.1, 0.6);
             addLog(`+1 Coin! Total Coins: ${coinsCount}`, 'coin');
         });
 
