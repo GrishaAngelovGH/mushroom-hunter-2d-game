@@ -14,6 +14,8 @@ import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
 import { sounds } from './audio.js';
 
+import { updateGamepadInput } from './gamepad.js';
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreElement = document.getElementById('score');
@@ -103,6 +105,7 @@ function gameLoop() {
     }
 
     try {
+        const gamepad = updateGamepadInput();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // 1. Draw Background (Parallax)
