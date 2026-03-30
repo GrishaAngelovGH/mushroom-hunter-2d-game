@@ -9,12 +9,24 @@ import {
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import { keys } from './input.js';
-import { toggleLog, addLog, clearLog, drawEliteProgressBar } from './ui.js';
+import { toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
 import { sounds } from './audio.js';
 
 import { updateGamepadInput } from './gamepad.js';
+
+// Gamepad connection handling
+window.addEventListener("gamepadconnected", refreshControlHints);
+window.addEventListener("gamepaddisconnected", refreshControlHints);
+setInterval(refreshControlHints, 1000);
+setTimeout(refreshControlHints, 200);
+
+['mousedown', 'keydown', 'touchstart'].forEach(evt => {
+    window.addEventListener(evt, () => {
+        refreshControlHints();
+    }, { once: false });
+});
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');

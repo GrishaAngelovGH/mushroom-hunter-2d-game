@@ -42,6 +42,86 @@ export function toggleLog() {
     container.classList.toggle('log-open', !isHidden);
 }
 
+export function refreshControlHints() {
+    const gamepads = navigator.getGamepads();
+    let isActive = false;
+
+    for (let i = 0; i < gamepads.length; i++) {
+        if (gamepads[i] && gamepads[i].connected) {
+            isActive = true;
+            break;
+        }
+    }
+
+    const jumpHint = document.getElementById('hint-jump');
+    const buyHint = document.getElementById('hint-buy');
+    const throwHint = document.getElementById('hint-throw');
+    const fsHint = document.getElementById('hint-fs');
+    const logHint = document.getElementById('hint-log');
+    const rulesHint = document.getElementById('hint-rules');
+
+    if (!buyHint) return;
+
+    const gpIcons = {
+        cross: `<svg viewBox="0 0 24 24"><path fill="white" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>`,
+        triangle: `<svg viewBox="0 0 24 24"><path fill="white" d="M12,2L1,21H23L12,2M12,6L19.53,19H4.47L12,6Z"/></svg>`,
+        square: `<svg viewBox="0 0 24 24"><path fill="white" d="M3,3V21H21V3H3M5,5H19V19H5V5Z"/></svg>`,
+        circle: `<svg viewBox="0 0 24 24"><path fill="white" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4Z"/></svg>`
+    };
+
+    if (isActive) {
+        if (jumpHint) {
+            jumpHint.innerHTML = gpIcons.cross;
+            jumpHint.className = 'key-hl gp-btn gp-cross';
+        }
+        if (buyHint) {
+            buyHint.innerHTML = gpIcons.triangle;
+            buyHint.className = 'key-hl gp-btn gp-triangle';
+        }
+        if (throwHint) {
+            throwHint.innerHTML = gpIcons.square;
+            throwHint.className = 'key-hl gp-btn gp-square';
+        }
+        if (fsHint) {
+            fsHint.innerText = 'OPTIONS';
+            fsHint.className = 'key-hl';
+        }
+        if (logHint) {
+            logHint.innerText = 'SHARE';
+            logHint.className = 'key-hl';
+        }
+        if (rulesHint) {
+            rulesHint.innerText = 'L1';
+            rulesHint.className = 'key-hl';
+        }
+    } else {
+        if (jumpHint) {
+            jumpHint.innerText = 'SPACE / ↑';
+            jumpHint.className = 'key-hl';
+        }
+        if (buyHint) {
+            buyHint.innerText = 'B';
+            buyHint.className = 'key-hl';
+        }
+        if (throwHint) {
+            throwHint.innerText = 'Z/X';
+            throwHint.className = 'key-hl';
+        }
+        if (fsHint) {
+            fsHint.innerText = 'F';
+            fsHint.className = 'key-hl';
+        }
+        if (logHint) {
+            logHint.innerText = 'P';
+            logHint.className = 'key-hl';
+        }
+        if (rulesHint) {
+            rulesHint.innerText = 'R';
+            rulesHint.className = 'key-hl';
+        }
+    }
+}
+
 export function drawEliteProgressBar(ctx, stompsCount) {
     const margin = 20;
     const barWidth = 220;
