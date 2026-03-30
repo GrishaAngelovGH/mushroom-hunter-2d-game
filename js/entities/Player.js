@@ -230,12 +230,12 @@ export class Player {
             ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY, bubbleX + bubbleW, bubbleY + r2);
             ctx.lineTo(bubbleX + bubbleW, bubbleY + bubbleH - r2);
             ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY + bubbleH, bubbleX + bubbleW - r2, bubbleY + bubbleH);
-            
+
             // Pointier V-shape (Shortened)
             ctx.lineTo(tailX + 8, bubbleY + bubbleH);
             ctx.lineTo(tailX, tailY);
             ctx.lineTo(tailX - 8, bubbleY + bubbleH);
-            
+
             ctx.lineTo(bubbleX + r2, bubbleY + bubbleH);
             ctx.quadraticCurveTo(bubbleX, bubbleY + bubbleH, bubbleX, bubbleY + bubbleH - r2);
             ctx.lineTo(bubbleX, bubbleY + r2);
