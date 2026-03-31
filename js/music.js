@@ -168,4 +168,72 @@ export class MusicEngine {
 
         setTimeout(() => this.scheduleChordPad(), dur * 1000);
     }
+
+    // Gentle, flowing melody notes
+    playMelodyStep() {
+        if (!this.active) return;
+        const now = audioCtx.currentTime;
+
+        const step = this.currentStep;
+        const motifLen = this.melodyMotif.length;
+        const scaleIdx = this.melodyMotif[step % motifLen];
+        const freq = this.melodyScale[scaleIdx];
+
+        // Humanize timing and velocity
+        const jitter = (Math.random() - 0.5) * 0.03;
+        const vel = 0.028 + Math.random() * 0.022;
+        const noteDur = this.stepDuration * (0.7 + Math.random() * 0.5);
+
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        // Subtle pitch vibrato
+        const vibLfo = audioCtx.createOscillator();
+        const vibGain = audioCtx.createGain();
+        vibLfo.frequency.value = 5.2 + Math.random() * 0.8;
+        vibGain.gain.value = 2.5;
+        vibLfo.connect(vibGain); vibGain.connect(osc.frequency);
+        vibLfo.start(now + 0.12); vibLfo.stop(now + noteDur + 0.1);
+
+        g.gain.setValueAtTime(0, now + jitter);
+        g.gain.linearRampToValueAtTime(vel, now + jitter + 0.06);
+        g.gain.exponentialRampToValueAtTime(vel * 0.4, now + jitter + noteDur * 0.6);
+        g.gain.exponentialRampToValueAtTime(0.001, now + jitter + noteDur);
+
+        osc.connect(g); g.connect(this.nodes.melodyBus);
+        osc.start(now + jitter); osc.stop(now + jitter + noteDur + 0.05);
+
+        // Occasionally add a soft upper octave sparkle
+        if (step % 3 === 0 && Math.random() > 0.55) {
+            const sparkOsc = audioCtx.createOscillator();
+            const sparkG = audioCtx.createGain();
+            sparkOsc.type = 'sine';
+            sparkOsc.frequency.value = freq * 2;
+            sparkG.gain.setValueAtTime(0, now + 0.05);
+            sparkG.gain.linearRampToValueAtTime(0.010, now + 0.12);
+            sparkG.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+            sparkOsc.connect(sparkG); sparkG.connect(this.nodes.shimmerBus);
+            sparkOsc.start(now + 0.05); sparkOsc.stop(now + 0.95);
+        }
+
+        // Evolve the motif gently every full phrase
+        if (step % motifLen === motifLen - 1) this.evolveMelody();
+
+        this.currentStep++;
+
+        // Swing: odd steps play slightly late
+        const swingOffset = (step % 2 === 1) ? this.stepDuration * 0.12 : 0;
+        setTimeout(() => this.playMelodyStep(), (this.stepDuration + swingOffset) * 1000);
+    }
+
+    evolveMelody() {
+        // Gently shift one note in the motif, preferring stepwise motion
+        const pos = Math.floor(Math.random() * this.melodyMotif.length);
+        const cur = this.melodyMotif[pos];
+        const delta = Math.random() > 0.5 ? 1 : -1;
+        const next = Math.max(2, Math.min(this.melodyScale.length - 2, cur + delta));
+        this.melodyMotif[pos] = next;
+    }
 }
