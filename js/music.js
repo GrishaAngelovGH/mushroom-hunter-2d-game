@@ -118,4 +118,54 @@ export class MusicEngine {
             osc.start();
         });
     }
+
+    // Sustained chord pads — change chord every 4 beats
+    scheduleChordPad() {
+        if (!this.active) return;
+        const chord = this.chords[this.chordIndex % this.chords.length];
+        const now = audioCtx.currentTime;
+        const dur = this.beatDuration * 4;
+
+        chord.forEach((scaleIdx, i) => {
+            const freq = this.melodyScale[scaleIdx];
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+
+            osc1.type = 'sine';
+            osc2.type = 'triangle';
+            osc1.frequency.value = freq;
+            osc2.frequency.value = freq;
+            osc1.detune.value = -5 + i * 2;
+            osc2.detune.value = 8 + i * 3;
+
+            g.gain.setValueAtTime(0, now);
+            g.gain.linearRampToValueAtTime(0.042 - i * 0.008, now + 0.6);
+            g.gain.setValueAtTime(0.042 - i * 0.008, now + dur - 0.5);
+            g.gain.linearRampToValueAtTime(0, now + dur);
+
+            osc1.connect(g); osc2.connect(g);
+            g.connect(this.nodes.padBus);
+
+            osc1.start(now); osc2.start(now);
+            osc1.stop(now + dur + 0.1); osc2.stop(now + dur + 0.1);
+        });
+
+        // Shimmer bell overtone on chord root
+        const rootFreq = this.melodyScale[chord[0]] * 4;
+        const bell = audioCtx.createOscillator();
+        const bellG = audioCtx.createGain();
+        bell.type = 'sine';
+        bell.frequency.value = rootFreq;
+        bellG.gain.setValueAtTime(0, now);
+        bellG.gain.linearRampToValueAtTime(0.025, now + 0.08);
+        bellG.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+        bell.connect(bellG); bellG.connect(this.nodes.shimmerBus);
+        bell.start(now); bell.stop(now + 2.6);
+
+        this.chordIndex++;
+        if (this.chordIndex % 4 === 0) this.phraseCount++;
+
+        setTimeout(() => this.scheduleChordPad(), dur * 1000);
+    }
 }
