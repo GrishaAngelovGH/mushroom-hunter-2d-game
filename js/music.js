@@ -102,4 +102,20 @@ export class MusicEngine {
 
         this.nodes = { masterGain, masterFilter, rev1, rev2, revMix, melodyDelay, padBus, melodyBus, bassBus, shimmerBus };
     }
+
+    // Soft, barely-audible foundational drone — C + G
+    startAmbientDrone() {
+        const freqs = [65.41, 98.00, 130.81]; // C2, G2, C3
+        freqs.forEach((f, i) => {
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = i === 0 ? 'sine' : 'triangle';
+            osc.frequency.value = f;
+            osc.detune.value = (i - 1) * 3;
+            g.gain.setValueAtTime(0, audioCtx.currentTime);
+            g.gain.linearRampToValueAtTime(i === 0 ? 0.018 : 0.007, audioCtx.currentTime + 6);
+            osc.connect(g); g.connect(this.nodes.bassBus);
+            osc.start();
+        });
+    }
 }
