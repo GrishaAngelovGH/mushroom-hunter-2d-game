@@ -1,4 +1,4 @@
-let audioCtx = null; // Initialize as null
+export let audioCtx = null; // Initialize as null
 
 // Resume audio on first user interaction
 export function initAudio() {
