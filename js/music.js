@@ -228,6 +228,34 @@ export class MusicEngine {
         setTimeout(() => this.playMelodyStep(), (this.stepDuration + swingOffset) * 1000);
     }
 
+    // Soft walking bass line, one note per beat
+    playBassStep() {
+        if (!this.active) return;
+        const now = audioCtx.currentTime;
+        const chordIdx = Math.floor(this.currentStep / 8) % this.chords.length;
+        const chord = this.chords[chordIdx];
+
+        // Alternate between root, fifth, octave
+        const bassPattern = [0, 2, 0, 1]; // chord tones
+        const toneIdx = chord[bassPattern[Math.floor(this.currentStep / 2) % 4]];
+        const freq = this.melodyScale[toneIdx] / 2; // one octave down
+
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const bassDur = this.beatDuration * 0.65;
+
+        g.gain.setValueAtTime(0, now);
+        g.gain.linearRampToValueAtTime(0.055, now + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.001, now + bassDur);
+
+        osc.connect(g); g.connect(this.nodes.bassBus);
+        osc.start(now); osc.stop(now + bassDur + 0.05);
+
+        setTimeout(() => this.playBassStep(), this.beatDuration * 1000);
+    }
+
     evolveMelody() {
         // Gently shift one note in the motif, preferring stepwise motion
         const pos = Math.floor(Math.random() * this.melodyMotif.length);
