@@ -23,4 +23,83 @@ export class MusicEngine {
         this.bassNotes = [0, 3, 2, 1]; // root of each chord, low octave
         this.phraseCount = 0;
     }
+
+    setupNodes() {
+        if (this.nodes.masterGain) return;
+
+        // Master output gain — start() handles all scheduling
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0, audioCtx.currentTime); // start silent; start() will ramp up
+        masterGain.connect(audioCtx.destination);
+
+        // Warm lowpass filter on master
+        const masterFilter = audioCtx.createBiquadFilter();
+        masterFilter.type = 'lowpass';
+        masterFilter.frequency.value = 3200;
+        masterFilter.Q.value = 0.5;
+        masterFilter.connect(masterGain);
+
+        // Simulated reverb: two parallel delays + a soft feedback loop
+        const rev1 = audioCtx.createDelay(2.0);
+        rev1.delayTime.value = 0.31;
+        const rev2 = audioCtx.createDelay(2.0);
+        rev2.delayTime.value = 0.47;
+        const revFb1 = audioCtx.createGain();
+        revFb1.gain.value = 0.22;
+        const revFb2 = audioCtx.createGain();
+        revFb2.gain.value = 0.18;
+        const revMix = audioCtx.createGain();
+        revMix.gain.value = 0.38;
+
+        rev1.connect(revFb1); revFb1.connect(rev1);
+        rev2.connect(revFb2); revFb2.connect(rev2);
+        rev1.connect(revMix);
+        rev2.connect(revMix);
+        revMix.connect(masterFilter);
+
+        // Slapback delay for melody sparkle
+        const melodyDelay = audioCtx.createDelay(1.0);
+        melodyDelay.delayTime.value = this.beatDuration * 0.375;
+        const melodyDelayFb = audioCtx.createGain();
+        melodyDelayFb.gain.value = 0.28;
+        const melodyDelayMix = audioCtx.createGain();
+        melodyDelayMix.gain.value = 0.30;
+        melodyDelay.connect(melodyDelayFb); melodyDelayFb.connect(melodyDelay);
+        melodyDelay.connect(melodyDelayMix); melodyDelayMix.connect(masterFilter);
+
+        // Gentle LFO tremolo on the pad layer
+        const tremolo = audioCtx.createOscillator();
+        const tremoloGain = audioCtx.createGain();
+        tremolo.type = 'sine';
+        tremolo.frequency.value = 0.12;
+        tremoloGain.gain.value = 0.006;
+        tremolo.connect(tremoloGain);
+        tremolo.start();
+
+        // Pad bus (chord layer)
+        const padBus = audioCtx.createGain();
+        padBus.gain.value = 0.14;
+        tremoloGain.connect(padBus.gain);
+        padBus.connect(rev1);
+        padBus.connect(masterFilter);
+
+        // Melody bus
+        const melodyBus = audioCtx.createGain();
+        melodyBus.gain.value = 1.0;
+        melodyBus.connect(melodyDelay);
+        melodyBus.connect(masterFilter);
+
+        // Bass bus
+        const bassBus = audioCtx.createGain();
+        bassBus.gain.value = 0.22;
+        bassBus.connect(masterFilter);
+
+        // Shimmer / high bell bus
+        const shimmerBus = audioCtx.createGain();
+        shimmerBus.gain.value = 0.07;
+        shimmerBus.connect(rev2);
+        shimmerBus.connect(masterFilter);
+
+        this.nodes = { masterGain, masterFilter, rev1, rev2, revMix, melodyDelay, padBus, melodyBus, bassBus, shimmerBus };
+    }
 }
