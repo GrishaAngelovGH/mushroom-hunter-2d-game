@@ -9,10 +9,13 @@ import {
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import { keys } from './input.js';
-import { toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints } from './ui.js';
+import { 
+    toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints, 
+    syncSettingsUI, showSettings, hideSettings, toggleSettings, toggleVibration 
+} from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
-import { sounds } from './audio.js';
+import { sounds, toggleMusic, setMusicVolume } from './audio.js';
 
 import { updateGamepadInput, vibrate } from './gamepad.js';
 
@@ -79,6 +82,14 @@ function resetGame() {
 }
 
 restartBtn.addEventListener('click', resetGame);
+
+// Settings UI Events
+document.getElementById('btn-settings-gear').addEventListener('click', showSettings);
+document.getElementById('close-settings').addEventListener('click', hideSettings);
+document.getElementById('back-to-game').addEventListener('click', hideSettings);
+document.getElementById('music-icon').addEventListener('click', toggleMusic);
+document.getElementById('vibration-toggle').addEventListener('click', toggleVibration);
+document.getElementById('music-volume').addEventListener('input', (e) => setMusicVolume(e.target.value));
 
 // UI Toggles
 window.addEventListener('keydown', (e) => {
@@ -246,4 +257,5 @@ function gameLoop() {
 
 // Start
 initLevel();
+syncSettingsUI();
 gameLoop();

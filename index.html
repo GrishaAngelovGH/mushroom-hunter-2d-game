@@ -10,6 +10,7 @@
 </head>
 <body>
     <div id="game-container" class="log-open">
+        <div class="btn-settings" id="btn-settings-gear" title="Settings">⚙️</div>
         <div id="ui">
             <div class="ui-stats">
                 <div class="stat-badge"><span class="stat-label">⭐ Score:</span> <span id="score" class="stat-value">0</span></div>
@@ -31,6 +32,38 @@
             <h1 id="status-text">Game Over!</h1>
             <p>Your score: <span id="final-score">0</span></p>
             <button id="restart-btn">Play Again</button>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal-overlay">
+            <div class="modal-content">
+                <span class="close-modal" id="close-settings">&times;</span>
+                <h2>⚙️ Game Settings</h2>
+
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <span class="setting-label">🎵 Music</span>
+                        <div class="setting-control">
+                            <span id="music-icon" style="cursor:pointer; font-size: 20px;">🎵</span>
+                            <input id="music-volume" type="range" min="0" max="100" value="55">
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <span class="setting-label">📳 Haptics</span>
+                        <button id="vibration-toggle" class="setting-btn-toggle">ENABLED</button>
+                    </div>
+
+                    <div class="setting-item">
+                        <span class="setting-label">🎨 Dynamic Environments</span>
+                        <button id="dynamic-ui-toggle" class="setting-btn-toggle">ON</button>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="back-to-game">Back to Game</button>
+                </div>
+            </div>
         </div>
 
         <div id="view-stack">

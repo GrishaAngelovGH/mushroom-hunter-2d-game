@@ -1,4 +1,11 @@
+import { MusicEngine } from './music.js';
+import { addLog } from './ui.js';
+
 export let audioCtx = null; // Initialize as null
+export const musicEngine = new MusicEngine();
+export let musicEnabled = localStorage.getItem('mushroomMusicEnabled') !== 'false'; // Default true
+const _savedVol = localStorage.getItem('mushroomMusicVolume');
+export let musicVolume = _savedVol !== null ? parseInt(_savedVol) : 55;
 
 // Resume audio on first user interaction
 export function initAudio() {
@@ -10,9 +17,51 @@ export function initAudio() {
 
     if (audioCtx.state === 'suspended') {
         audioCtx.resume().then(() => {
-            // No longer needed
+            if (musicEnabled) {
+                musicEngine.targetVolume = musicVolume / 100;
+                musicEngine.start();
+            }
         });
+    } else {
+        if (musicEnabled) {
+            musicEngine.targetVolume = musicVolume / 100;
+            musicEngine.start();
+        }
     }
+}
+
+export function toggleMusic() {
+    musicEnabled = !musicEnabled;
+    localStorage.setItem('mushroomMusicEnabled', musicEnabled);
+    const icon = document.getElementById('music-icon');
+    if (icon) {
+        icon.style.opacity = musicEnabled ? '1' : '0.4';
+        icon.style.filter = musicEnabled ? 'none' : 'grayscale(1)';
+    }
+
+    if (musicEnabled) {
+        if (!audioCtx || audioCtx.state === 'suspended') {
+            addLog("Interaction required for music.", 'info');
+        } else {
+            musicEngine.start();
+        }
+    } else {
+        musicEngine.stop();
+    }
+    addLog(musicEnabled ? "Music: ON" : "Music: OFF", 'info');
+}
+
+export function setMusicVolume(val) {
+    val = parseInt(val);
+    musicVolume = val; // Keep in-memory variable in sync
+    const gain = val / 100;
+    localStorage.setItem('mushroomMusicVolume', val);
+    if (musicEngine.nodes.masterGain) {
+        musicEngine.nodes.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+        musicEngine.nodes.masterGain.gain.setValueAtTime(musicEngine.nodes.masterGain.gain.value, audioCtx.currentTime);
+        musicEngine.nodes.masterGain.gain.linearRampToValueAtTime(gain, audioCtx.currentTime + 0.05);
+    }
+    musicEngine.targetVolume = gain;
 }
 
 export function playSound(freq, type, duration, volume, sweepFreq = null) {

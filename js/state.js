@@ -42,6 +42,10 @@ export function setGameActive(value) {
     gameActive = value;
 }
 
+export function setVibrationsEnabled(value) {
+    vibrationsEnabled = value;
+}
+
 export function setLastPlatX(val) { lastPlatX = val; }
 export function setLastPlatY(val) { lastPlatY = val; }
 export function setLastGeneratedX(val) { lastGeneratedX = val; }

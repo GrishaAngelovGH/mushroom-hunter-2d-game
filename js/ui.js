@@ -1,3 +1,7 @@
+import { musicEnabled, musicVolume, musicEngine, audioCtx, toggleMusic, setMusicVolume } from './audio.js';
+import { vibrationsEnabled, setGameActive, gameActive, setVibrationsEnabled } from './state.js';
+import { vibrate } from './gamepad.js';
+
 export function addLog(message, type = 'info') {
     const eventPanel = document.getElementById('event-panel');
     if (!eventPanel) return;
@@ -40,6 +44,69 @@ export function toggleLog() {
     const container = document.getElementById('game-container');
     const isHidden = panel.classList.toggle('hidden');
     container.classList.toggle('log-open', !isHidden);
+}
+
+export function showSettings() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) modal.style.display = 'flex';
+    syncSettingsUI();
+}
+
+export function hideSettings() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+export function toggleSettings() {
+    const modal = document.getElementById('settings-modal');
+    if (modal && modal.style.display === 'flex') {
+        hideSettings();
+    } else {
+        showSettings();
+    }
+}
+
+export function toggleVibration() {
+    const newVal = !vibrationsEnabled;
+    setVibrationsEnabled(newVal);
+    localStorage.setItem('mushroomVibrationsEnabled', newVal);
+    syncSettingsUI();
+    if (newVal) vibrate(150, 0.2, 0.5, true); // Confirmation buzz
+    addLog(newVal ? "Haptics Enabled" : "Haptics Disabled", 'info');
+}
+
+export function syncSettingsUI() {
+    // Music
+    const musicIcon = document.getElementById('music-icon');
+    const musicVol = document.getElementById('music-volume');
+    if (musicIcon) {
+        musicIcon.style.opacity = musicEnabled ? '1' : '0.4';
+        musicIcon.style.filter = musicEnabled ? 'none' : 'grayscale(1)';
+    }
+    if (musicVol) {
+        musicVol.value = musicVolume;
+        const gain = musicVolume / 100;
+        musicEngine.targetVolume = gain;
+        // Push immediately to the gain node if music is already running
+        if (musicEngine.nodes.masterGain) {
+            musicEngine.nodes.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+            musicEngine.nodes.masterGain.gain.setValueAtTime(gain, audioCtx.currentTime);
+        }
+    }
+
+    // Haptics
+    const vibBtn = document.getElementById('vibration-toggle');
+    if (vibBtn) {
+        vibBtn.textContent = vibrationsEnabled ? 'ENABLED' : 'DISABLED';
+        vibBtn.style.opacity = vibrationsEnabled ? '1' : '0.5';
+    }
+
+    // Dynamic UI (Placeholder for now)
+    const dynBtn = document.getElementById('dynamic-ui-toggle');
+    if (dynBtn) {
+        dynBtn.textContent = 'ON';
+        dynBtn.style.opacity = '1';
+    }
 }
 
 export function refreshControlHints() {
