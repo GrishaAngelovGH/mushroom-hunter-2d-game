@@ -92,10 +92,15 @@ document.getElementById('music-volume').addEventListener('input', (e) => setMusi
 
 // UI Toggles
 window.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'p') {
-        toggleLog();
+    if (e.key === ' ') {
+        if (!gameActive) { // Only reset if game is not active
+            resetGame();
+            addLog("Game reset via spacebar.", 'info');
+            return; // Stop further processing for this key event
+        }
     }
 
+    // Original game input handling, only if game is active
     if (!gameActive) return;
     const key = e.key.toLowerCase();
 
