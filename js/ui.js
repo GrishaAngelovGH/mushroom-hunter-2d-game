@@ -1,5 +1,5 @@
-import { musicEnabled, musicVolume, musicEngine, audioCtx, toggleMusic, setMusicVolume } from './audio.js';
-import { vibrationsEnabled, setGameActive, gameActive, setVibrationsEnabled } from './state.js';
+import { musicEnabled, musicVolume, musicEngine, audioCtx } from './audio.js';
+import { vibrationsEnabled, setVibrationsEnabled } from './state.js';
 import { vibrate } from './gamepad.js';
 
 export function addLog(message, type = 'info') {

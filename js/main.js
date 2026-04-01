@@ -8,10 +8,9 @@ import {
     STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo
 } from './state.js';
 import { Stone } from './entities/Stone.js';
-import { keys } from './input.js';
-import { 
-    toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints, 
-    syncSettingsUI, showSettings, hideSettings, toggleSettings, toggleVibration 
+import {
+    toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints,
+    syncSettingsUI, showSettings, hideSettings, toggleVibration
 } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
