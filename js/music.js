@@ -103,6 +103,44 @@ export class MusicEngine {
         this.nodes = { masterGain, masterFilter, rev1, rev2, revMix, melodyDelay, padBus, melodyBus, bassBus, shimmerBus };
     }
 
+    start() {
+        if (this.active) return;
+        if (!audioCtx || audioCtx.state === 'suspended') return;
+        const firstTime = !this.nodes.masterGain;
+        this.setupNodes();
+        this.active = true;
+        // Ramp master gain up — works for first start AND re-enable after stop
+        this.nodes.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+        if (this.targetVolume === 0) {
+            // Stay silent
+            this.nodes.masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+        } else if (firstTime) {
+            // First start: always ramp from 0 to avoid reading the WebAudio default gain of 1.0
+            this.nodes.masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            this.nodes.masterGain.gain.linearRampToValueAtTime(this.targetVolume ?? 0.55, audioCtx.currentTime + 1.5);
+        } else {
+            // Re-enable after stop(): ramp from wherever the fade-out left off
+            this.nodes.masterGain.gain.setValueAtTime(this.nodes.masterGain.gain.value, audioCtx.currentTime);
+            this.nodes.masterGain.gain.linearRampToValueAtTime(this.targetVolume ?? 0.55, audioCtx.currentTime + 1.5);
+        }
+        if (firstTime) {
+            this.startAmbientDrone();
+        }
+        // Always re-kick the sequencers (they stop looping when active = false)
+        this.scheduleChordPad();
+        this.playMelodyStep();
+        this.playBassStep();
+    }
+
+    stop() {
+        this.active = false;
+        if (this.nodes.masterGain) {
+            this.nodes.masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+            this.nodes.masterGain.gain.setValueAtTime(this.nodes.masterGain.gain.value, audioCtx.currentTime);
+            this.nodes.masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.2);
+        }
+    }
+
     // Soft, barely-audible foundational drone — C + G
     startAmbientDrone() {
         const freqs = [65.41, 98.00, 130.81]; // C2, G2, C3
