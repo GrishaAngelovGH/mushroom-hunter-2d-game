@@ -83,7 +83,6 @@ export function playSound(freq, type, duration, volume, sweepFreq = null) {
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
 
     osc.connect(gain);
-    osc.connect(audioCtx.destination); // Connects to the speakers
     gain.connect(audioCtx.destination); // Connects to the speakers
 
     osc.start();
@@ -94,7 +93,7 @@ export const sounds = {
     jump: () => playSound(200, 'square', 0.15, 0.1, 600),
     coin: () => {
         playSound(660, 'sine', 0.1, 0.1);
-        setTimeout(() => playSound(880, 'sine', 0.1, 0.1), 100);
+        setTimeout(() => playSound(880, 'sine', 0.1, 0.02), 100);
     },
     stomp: () => playSound(150, 'square', 0.2, 0.15, 50),
     gameOver: () => {
@@ -136,3 +135,5 @@ export const sounds = {
 ['mousedown', 'keydown', 'touchstart'].forEach(evt => {
     window.addEventListener(evt, initAudio, { once: true });
 });
+
+
