@@ -5,13 +5,19 @@ import { sounds } from './audio.js';
 
 export let gameActive = true;
 export let vibrationsEnabled = localStorage.getItem('mushroomVibrationsEnabled') !== 'false';
+export let dynamicUIEnabled = localStorage.getItem('mushroomDynamicUIEnabled') !== 'false';
 export let currentPalette = PALETTES.EMERALD;
 
 export function setCurrentPalette(palette) {
     currentPalette = palette;
 }
 
+export function setDynamicUIEnabled(value) {
+    dynamicUIEnabled = value;
+}
+
 function checkEnvironmentShift() {
+    if (!dynamicUIEnabled) return;
     const paletteKeys = Object.keys(PALETTES);
     const index = Math.floor(coinsCount / ENV_SHIFT_MILESTONE) % paletteKeys.length;
     const newPalette = PALETTES[paletteKeys[index]];
@@ -20,7 +26,7 @@ function checkEnvironmentShift() {
         setCurrentPalette(newPalette);
         sounds.shift();
         addLog(`Environment shift: ${paletteKeys[index]} theme!`, 'win');
-        setChatBubble("The world is changing...", 120);
+        setChatBubble(`Behold! The ${paletteKeys[index]} theme!`, 180);
     }
 }
 export let platforms = [];

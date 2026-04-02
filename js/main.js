@@ -13,7 +13,7 @@ import { Stone } from './entities/Stone.js';
 import {
     toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints,
     syncSettingsUI, showSettings, hideSettings, toggleVibration, drawNotifications,
-    drawAchievementBars
+    drawAchievementBars, toggleDynamicUI
 } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
@@ -91,6 +91,7 @@ document.getElementById('close-settings').addEventListener('click', hideSettings
 document.getElementById('back-to-game').addEventListener('click', hideSettings);
 document.getElementById('music-icon').addEventListener('click', toggleMusic);
 document.getElementById('vibration-toggle').addEventListener('click', toggleVibration);
+document.getElementById('dynamic-ui-toggle').addEventListener('click', toggleDynamicUI);
 document.getElementById('music-volume').addEventListener('input', (e) => setMusicVolume(e.target.value));
 
 // UI Toggles

@@ -1,5 +1,9 @@
 import { musicEnabled, musicVolume, musicEngine, audioCtx } from './audio.js';
-import { vibrationsEnabled, setVibrationsEnabled } from './state.js';
+import {
+    vibrationsEnabled, setVibrationsEnabled, dynamicUIEnabled, setDynamicUIEnabled,
+    setCurrentPalette
+} from './state.js';
+import { PALETTES } from './config.js';
 import { vibrate } from './gamepad.js';
 
 export function addLog(message, type = 'info') {
@@ -75,6 +79,22 @@ export function toggleVibration() {
     addLog(newVal ? "Haptics Enabled" : "Haptics Disabled", 'info');
 }
 
+export function toggleDynamicUI() {
+    const newVal = !dynamicUIEnabled;
+    setDynamicUIEnabled(newVal);
+    localStorage.setItem('mushroomDynamicUIEnabled', newVal);
+    
+    if (!newVal) {
+        // Reset to classic emerald when disabled
+        setCurrentPalette(PALETTES.EMERALD);
+        addLog("Dynamic UI Disabled (Emerald theme set)", 'info');
+    } else {
+        addLog("Dynamic UI Enabled", 'info');
+    }
+    
+    syncSettingsUI();
+}
+
 export function syncSettingsUI() {
     // Music
     const musicIcon = document.getElementById('music-icon');
@@ -101,11 +121,11 @@ export function syncSettingsUI() {
         vibBtn.style.opacity = vibrationsEnabled ? '1' : '0.5';
     }
 
-    // Dynamic UI (Placeholder for now)
+    // Dynamic UI
     const dynBtn = document.getElementById('dynamic-ui-toggle');
     if (dynBtn) {
-        dynBtn.textContent = 'ON';
-        dynBtn.style.opacity = '1';
+        dynBtn.textContent = dynamicUIEnabled ? 'ON' : 'OFF';
+        dynBtn.style.opacity = dynamicUIEnabled ? '1' : '0.5';
     }
 }
 
