@@ -5,12 +5,13 @@ import {
     updatePlatforms, updateCoins, updateEnemies, updatePowerups, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount,
     stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown, incrementTotalStomps,
-    STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo
+    STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo,
+    currentNotification, notificationQueue
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import {
     toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints,
-    syncSettingsUI, showSettings, hideSettings, toggleVibration
+    syncSettingsUI, showSettings, hideSettings, toggleVibration, drawNotifications
 } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
@@ -250,6 +251,7 @@ function gameLoop() {
 
         // 8. Draw UI Overlays (Canvas HUD)
         drawEliteProgressBar(ctx, enemiesStompedCount);
+        drawNotifications(ctx, canvas, currentNotification, notificationQueue);
 
         requestAnimationFrame(gameLoop);
     } catch (e) {

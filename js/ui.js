@@ -223,3 +223,67 @@ export function drawEliteProgressBar(ctx, stompsCount) {
     ctx.textAlign = 'left';
     ctx.fillText(`ELITE HUNT [${stompsCount % 20}/20]`, x + 5, y - 6);
 }
+
+import { setCurrentNotification, clearCurrentNotification } from './state.js';
+
+export function drawNotifications(ctx, canvas, currentNotification, notificationQueue) {
+    let active = currentNotification;
+
+    if (!active && notificationQueue.length > 0) {
+        active = notificationQueue.shift();
+        setCurrentNotification(active);
+    }
+
+    if (active) {
+        active.timer--;
+
+        // Slide down
+        if (active.timer > 160) {
+            active.y += (20 - active.y) * 0.1;
+            active.alpha = Math.min(1, active.alpha + 0.1);
+        }
+        // Slide up
+        else if (active.timer < 20) {
+            active.y += (-120 - active.y) * 0.1;
+            active.alpha = Math.max(0, active.alpha - 0.1);
+        }
+
+        ctx.save();
+        ctx.globalAlpha = active.alpha;
+        const w = 400;
+        const h = 60;
+        const x = (canvas.width - w) / 2;
+        const y = active.y;
+
+        // Shiny Badge Background
+        const grad = ctx.createLinearGradient(x, y, x, y + h);
+        grad.addColorStop(0, '#2C3E50');
+        grad.addColorStop(1, '#000');
+        ctx.fillStyle = grad;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#F1C40F';
+
+        // Main Box
+        ctx.fillRect(x, y, w, h);
+        ctx.strokeStyle = '#F1C40F';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x, y, w, h);
+        ctx.shadowBlur = 0; // Reset shadow for text
+
+        // Text
+        ctx.fillStyle = '#F1C40F';
+        ctx.font = 'bold 16px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("⭐ " + active.title + " MILESTONE!", canvas.width / 2, y + 25);
+
+        ctx.fillStyle = '#FFF';
+        ctx.font = '14px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+        ctx.fillText(active.reward, canvas.width / 2, y + 45);
+
+        ctx.restore();
+
+        if (active.timer <= 0) {
+            clearCurrentNotification();
+        }
+    }
+}

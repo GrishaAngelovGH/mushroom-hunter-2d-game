@@ -34,6 +34,29 @@ export const STONES_PER_BUY = 10;
 export let player = new Player();
 export let chatBubble = { text: '', timer: 0 };
 
+export let notificationQueue = [];
+export let currentNotification = null;
+
+export function setCurrentNotification(notif) {
+    currentNotification = notif;
+}
+
+export function clearCurrentNotification() {
+    currentNotification = null;
+}
+
+export function addNotification(title, reward) {
+    notificationQueue.push({
+        title,
+        reward,
+        timer: 180, // 3 seconds at 60fps
+        alpha: 0,
+        y: -100
+    });
+    sounds.powerup();
+    addLog(`🌟 Achievement Milestone: ${title}! Reward: ${reward}`, 'win');
+}
+
 export let score = 0;
 export let highScore = parseInt(localStorage.getItem('mushroomHighScore')) || 0;
 export let coinsCount = 0;
@@ -68,6 +91,7 @@ export function checkAchievements() {
         achievementsUnlocked.stompMilestone = stompMilestones;
         saveAchievements();
         addLog("🌟 Achievement: Mushroom Hunter! (+50 Coins)", "win");
+        addNotification("Mushroom Hunter", "+50 Coins Reward!");
         giveReward(50);
     }
 
@@ -77,6 +101,7 @@ export function checkAchievements() {
         achievementsUnlocked.coinMilestone = coinMilestones;
         saveAchievements();
         addLog("🌟 Achievement: Treasure Seeker! (+50 Coins)", "win");
+        addNotification("Treasure Seeker", "+50 Coins Reward!");
         giveReward(50);
     }
 
@@ -86,6 +111,7 @@ export function checkAchievements() {
         achievementsUnlocked.stoneMilestone = stoneMilestones;
         saveAchievements();
         addLog("🌟 Achievement: Stone Slinger! (+50 Coins)", "win");
+        addNotification("Stone Slinger", "+50 Coins Reward!");
         giveReward(50);
     }
 }
@@ -110,7 +136,7 @@ function vibrateLocal(duration = 200, strong = 0.5, weak = 0.5) {
 export function giveReward(amount) {
     coinsCount += amount;
     incrementTotalCoinsAllTime(amount);
-    sounds.powerup();
+    checkEnvironmentShift();
     vibrateLocal(150, 0.4, 0.4);
 }
 
@@ -208,6 +234,8 @@ export function resetState() {
     stoneAmmo = 0;
     totalStonesThrown = 0;
     enemiesStompedCount = 0;
+    notificationQueue.length = 0;
+    currentNotification = null;
     currentPalette = PALETTES.EMERALD;
     player.reset();
     chatBubble.timer = 0;
