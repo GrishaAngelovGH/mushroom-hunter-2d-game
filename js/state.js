@@ -67,7 +67,8 @@ export function checkAchievements() {
     if (stompMilestones > (achievementsUnlocked.stompMilestone || 0)) {
         achievementsUnlocked.stompMilestone = stompMilestones;
         saveAchievements();
-        // #79 giveReward(50) and #80 addNotification will go here
+        addLog("🌟 Achievement: Mushroom Hunter! (+50 Coins)", "win");
+        giveReward(50);
     }
 
     // 2. Treasure Seeker: Every 200 Total Coins
@@ -75,6 +76,8 @@ export function checkAchievements() {
     if (coinMilestones > (achievementsUnlocked.coinMilestone || 0)) {
         achievementsUnlocked.coinMilestone = coinMilestones;
         saveAchievements();
+        addLog("🌟 Achievement: Treasure Seeker! (+50 Coins)", "win");
+        giveReward(50);
     }
 
     // 3. Stone Slinger: Every 50 Stones Thrown
@@ -82,11 +85,33 @@ export function checkAchievements() {
     if (stoneMilestones > (achievementsUnlocked.stoneMilestone || 0)) {
         achievementsUnlocked.stoneMilestone = stoneMilestones;
         saveAchievements();
+        addLog("🌟 Achievement: Stone Slinger! (+50 Coins)", "win");
+        giveReward(50);
     }
 }
 
 function saveAchievements() {
     localStorage.setItem('mushroomAchievementsUnlocked', JSON.stringify(achievementsUnlocked));
+}
+
+function vibrateLocal(duration = 200, strong = 0.5, weak = 0.5) {
+    if (!vibrationsEnabled) return;
+    const gamepad = navigator.getGamepads()[0];
+    if (gamepad && gamepad.vibrationActuator) {
+        gamepad.vibrationActuator.playEffect("dual-rumble", {
+            startDelay: 0,
+            duration: duration,
+            weakMagnitude: weak,
+            strongMagnitude: strong
+        }).catch(() => { });
+    }
+}
+
+export function giveReward(amount) {
+    coinsCount += amount;
+    incrementTotalCoinsAllTime(amount);
+    sounds.powerup();
+    vibrateLocal(150, 0.4, 0.4);
 }
 
 export function registerRegularStompForEliteHunt() {
