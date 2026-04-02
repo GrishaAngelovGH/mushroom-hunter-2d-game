@@ -4,7 +4,7 @@ import {
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, updateCoins, updateEnemies, updatePowerups, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount,
-    stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown,
+    stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown, incrementTotalStomps,
     STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo
 } from './state.js';
 import { Stone } from './entities/Stone.js';
@@ -184,6 +184,7 @@ function gameLoop() {
                     addScore(points);
                     if (e.isElite) sounds.eliteHit();
                     else sounds.stomp();
+                    incrementTotalStomps();
                     vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
                     addLog(e.isElite ? "🌟 Elite Stone Hit! +20 Points" : "Stone Hit! +10 Points", 'stone');
                     e.respawn();
@@ -205,6 +206,7 @@ function gameLoop() {
                 addScore(points);
                 if (e.isElite) sounds.eliteHit();
                 else sounds.stomp();
+                incrementTotalStomps();
                 vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
                 addLog(e.isElite ? '🌟 Elite Stomped! +10 Points' : 'Stomped! +5 Points', 'stomp');
                 e.respawn();

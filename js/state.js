@@ -28,7 +28,7 @@ export let coins = [];
 export let enemies = [];
 export let powerups = [];
 export let stones = [];
-export let totalStonesThrown = 0;
+export let totalStonesThrown = parseInt(localStorage.getItem('mushroomTotalStonesThrown')) || 0;
 export const STONE_COST = 25;
 export const STONES_PER_BUY = 10;
 export let player = new Player();
@@ -42,8 +42,16 @@ export let stoneAmmo = 0;
 export function consumeStoneAmmo() { stoneAmmo--; }
 export function addStoneAmmo(amount) { stoneAmmo += amount; }
 export function deductCoins(amount) { coinsCount -= amount; }
-export function incrementTotalStonesThrown() { totalStonesThrown++; }
-export function resetTotalStonesThrown() { totalStonesThrown = 0; }
+
+export function incrementTotalStonesThrown() {
+    totalStonesThrown++;
+    localStorage.setItem('mushroomTotalStonesThrown', totalStonesThrown);
+}
+
+export function resetTotalStonesThrown() {
+    totalStonesThrown = 0;
+    localStorage.setItem('mushroomTotalStonesThrown', 0);
+}
 
 /** Regular stomps toward Elite Hunt (every 20th respawns as elite). */
 export let enemiesStompedCount = 0;
