@@ -1,10 +1,4 @@
-const palette = {
-    name: "Classic Emerald",
-    sky: ["#5BA8D4", "#87CEEB"],
-    farMtn: { body: "#8FA8C0", shadow: "#5C7A96", snow: "#E8F0F8", snowLine: 260 },
-    midMtn: { body: "#6B8F71", shadow: "#3D6647" },
-    hills: "#228B22"
-};
+import { currentPalette } from './state.js';
 
 function drawMountainRange(ctx, peaks, groundY, bodyColor, shadowColor, snowColor, snowLine) {
     ctx.beginPath();
@@ -55,7 +49,7 @@ function drawMountainRange(ctx, peaks, groundY, bodyColor, shadowColor, snowColo
             ctx.closePath();
             ctx.fillStyle = snowColor;
             ctx.fill();
-            
+
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p.x - p.w * 0.03, p.y + (snowBase - p.y) * 0.35);
@@ -68,13 +62,10 @@ function drawMountainRange(ctx, peaks, groundY, bodyColor, shadowColor, snowColo
 }
 
 export function drawBackground(ctx, canvas, scrollOffset) {
-    const p = palette;
+    const p = currentPalette;
 
-    // Sky Gradient
-    const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    skyGrad.addColorStop(0, p.sky[0]);
-    skyGrad.addColorStop(1, p.sky[1]);
-    ctx.fillStyle = skyGrad;
+    // Sky Color (Solid or Gradient based on palette)
+    ctx.fillStyle = p.sky;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Layer 1: Distant snow-capped mountains (Slowest parallax)
@@ -88,7 +79,8 @@ export function drawBackground(ctx, canvas, scrollOffset) {
         { x: -farOffset % 1400 + 1350, y: 240, w: 400, h: 310 },
         { x: -farOffset % 1400 + 1580, y: 210, w: 410, h: 340 },
     ];
-    drawMountainRange(ctx, farPeaks, 560, p.farMtn.body, p.farMtn.shadow, p.farMtn.snow, p.farMtn.snowLine);
+    // Use darker version for shadow if possible, or just subtle alpha
+    drawMountainRange(ctx, farPeaks, 560, p.mountainsFar, p.hills, '#FFFFFF', 260);
 
     // Layer 2: Mid green mountains
     const midOffset = scrollOffset * 0.12;
@@ -101,7 +93,7 @@ export function drawBackground(ctx, canvas, scrollOffset) {
         { x: -midOffset % 1200 + 1100, y: 330, w: 290, h: 220 },
         { x: -midOffset % 1200 + 1290, y: 315, w: 300, h: 235 },
     ];
-    drawMountainRange(ctx, midPeaks, 560, p.midMtn.body, p.midMtn.shadow, null, 999);
+    drawMountainRange(ctx, midPeaks, 560, p.mountainsMid, p.hills, null, 999);
 
     // Layer 3: Near rolling hills
     const nearOffset = scrollOffset * 0.28;

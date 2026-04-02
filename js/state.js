@@ -1,8 +1,28 @@
 import { Player } from './entities/Player.js';
 import { addLog } from './ui.js';
+import { PALETTES, ENV_SHIFT_MILESTONE } from './config.js';
+import { sounds } from './audio.js';
 
 export let gameActive = true;
 export let vibrationsEnabled = localStorage.getItem('mushroomVibrationsEnabled') !== 'false';
+export let currentPalette = PALETTES.EMERALD;
+
+export function setCurrentPalette(palette) {
+    currentPalette = palette;
+}
+
+function checkEnvironmentShift() {
+    const paletteKeys = Object.keys(PALETTES);
+    const index = Math.floor(coinsCount / ENV_SHIFT_MILESTONE) % paletteKeys.length;
+    const newPalette = PALETTES[paletteKeys[index]];
+
+    if (currentPalette !== newPalette) {
+        setCurrentPalette(newPalette);
+        sounds.shift();
+        addLog(`Environment shift: ${paletteKeys[index]} theme!`, 'win');
+        setChatBubble("The world is changing...", 120);
+    }
+}
 export let platforms = [];
 export let coins = [];
 export let enemies = [];
@@ -75,6 +95,9 @@ export function addCoins(amount) {
     const previous = coinsCount;
     coinsCount += amount;
 
+    // Trigger palette shift if milestone reached
+    checkEnvironmentShift();
+
     // Stone purchase prompt
     const nextThreshold = Math.floor(coinsCount / STONE_COST) * STONE_COST;
     if (previous < nextThreshold && nextThreshold > 0) {
@@ -103,6 +126,7 @@ export function resetState() {
     stoneAmmo = 0;
     totalStonesThrown = 0;
     enemiesStompedCount = 0;
+    currentPalette = PALETTES.EMERALD;
     player.reset();
     chatBubble.timer = 0;
 }
