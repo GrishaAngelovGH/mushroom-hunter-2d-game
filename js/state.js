@@ -48,6 +48,9 @@ export function resetTotalStonesThrown() { totalStonesThrown = 0; }
 /** Regular stomps toward Elite Hunt (every 20th respawns as elite). */
 export let enemiesStompedCount = 0;
 
+export let totalStomps = parseInt(localStorage.getItem('mushroomTotalStomps')) || 0;
+export let totalCoinsAllTime = parseInt(localStorage.getItem('mushroomTotalCoinsAllTime')) || 0;
+
 export function registerRegularStompForEliteHunt() {
     enemiesStompedCount++;
     return enemiesStompedCount;
@@ -95,6 +98,9 @@ export function addCoins(amount) {
     const previous = coinsCount;
     coinsCount += amount;
 
+    // Update cumulative total coins
+    incrementTotalCoinsAllTime(amount);
+
     // Trigger palette shift if milestone reached
     checkEnvironmentShift();
 
@@ -110,6 +116,17 @@ export function updateCoins(newList) { coins.length = 0; coins.push(...newList);
 export function updateEnemies(newList) { enemies.length = 0; enemies.push(...newList); }
 export function updatePowerups(newList) { powerups.length = 0; powerups.push(...newList); }
 export function updateStones(newList) { stones.length = 0; stones.push(...newList); }
+
+export function incrementTotalStomps() {
+    totalStomps++;
+    localStorage.setItem('mushroomTotalStomps', totalStomps);
+}
+
+export function incrementTotalCoinsAllTime(amount) {
+    totalCoinsAllTime += amount;
+    localStorage.setItem('mushroomTotalCoinsAllTime', totalCoinsAllTime);
+}
+
 
 export function resetState() {
     platforms.length = 0;
