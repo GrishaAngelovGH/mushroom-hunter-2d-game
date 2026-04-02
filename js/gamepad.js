@@ -1,4 +1,5 @@
 import { keys } from './input.js';
+import { initAudio } from './audio.js';
 import { gameActive, vibrationsEnabled } from './state.js';
 import { toggleLog } from './ui.js';
 
@@ -28,6 +29,8 @@ export function updateGamepadInput() {
     }
 
     if (!gp || !gp.axes || !gp.buttons) return null;
+
+    initAudio();
 
     // 1. Movement: Left Analog Stick (Axis 0)
     const axisThreshold = 0.2;

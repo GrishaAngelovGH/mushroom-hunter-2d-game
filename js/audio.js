@@ -7,13 +7,15 @@ export let musicEnabled = localStorage.getItem('mushroomMusicEnabled') !== 'fals
 const _savedVol = localStorage.getItem('mushroomMusicVolume');
 export let musicVolume = _savedVol !== null ? parseInt(_savedVol) : 55;
 
+let audioInitialized = false;
+
 // Resume audio on first user interaction
 export function initAudio() {
-    if (!audioCtx) {
-        // Create AudioContext only on first user interaction
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContext();
-    }
+    if (audioInitialized) return;
+    audioInitialized = true;
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
 
     if (audioCtx.state === 'suspended') {
         audioCtx.resume().then(() => {
@@ -135,5 +137,3 @@ export const sounds = {
 ['mousedown', 'keydown', 'touchstart'].forEach(evt => {
     window.addEventListener(evt, initAudio, { once: true });
 });
-
-
