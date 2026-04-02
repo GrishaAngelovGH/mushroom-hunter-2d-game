@@ -28,7 +28,7 @@ export let coins = [];
 export let enemies = [];
 export let powerups = [];
 export let stones = [];
-export let totalStonesThrown = parseInt(localStorage.getItem('mushroomTotalStonesThrown')) || 0;
+export let totalStonesThrown = 0;
 export const STONE_COST = 25;
 export const STONES_PER_BUY = 10;
 export let player = new Player();
@@ -68,28 +68,25 @@ export function deductCoins(amount) { coinsCount -= amount; }
 
 export function incrementTotalStonesThrown() {
     totalStonesThrown++;
-    localStorage.setItem('mushroomTotalStonesThrown', totalStonesThrown);
     checkAchievements();
 }
 
 export function resetTotalStonesThrown() {
     totalStonesThrown = 0;
-    localStorage.setItem('mushroomTotalStonesThrown', 0);
 }
 
 /** Regular stomps toward Elite Hunt (every 20th respawns as elite). */
 export let enemiesStompedCount = 0;
 
-export let totalStomps = parseInt(localStorage.getItem('mushroomTotalStomps')) || 0;
-export let totalCoinsAllTime = parseInt(localStorage.getItem('mushroomTotalCoinsAllTime')) || 0;
-export let achievementsUnlocked = JSON.parse(localStorage.getItem('mushroomAchievementsUnlocked')) || {};
+export let totalStomps = 0;
+export let totalCoinsAllTime = 0;
+export let achievementsUnlocked = {};
 
 export function checkAchievements() {
     // 1. Mushroom Hunter: Every 25 Stomps
     const stompMilestones = Math.floor(totalStomps / 25);
     if (stompMilestones > (achievementsUnlocked.stompMilestone || 0)) {
         achievementsUnlocked.stompMilestone = stompMilestones;
-        saveAchievements();
         addLog("🌟 Achievement: Mushroom Hunter! (+50 Coins)", "win");
         addNotification("Mushroom Hunter", "+50 Coins Reward!");
         giveReward(50);
@@ -99,7 +96,6 @@ export function checkAchievements() {
     const coinMilestones = Math.floor(totalCoinsAllTime / 200);
     if (coinMilestones > (achievementsUnlocked.coinMilestone || 0)) {
         achievementsUnlocked.coinMilestone = coinMilestones;
-        saveAchievements();
         addLog("🌟 Achievement: Treasure Seeker! (+50 Coins)", "win");
         addNotification("Treasure Seeker", "+50 Coins Reward!");
         giveReward(50);
@@ -109,15 +105,10 @@ export function checkAchievements() {
     const stoneMilestones = Math.floor(totalStonesThrown / 50);
     if (stoneMilestones > (achievementsUnlocked.stoneMilestone || 0)) {
         achievementsUnlocked.stoneMilestone = stoneMilestones;
-        saveAchievements();
         addLog("🌟 Achievement: Stone Slinger! (+50 Coins)", "win");
         addNotification("Stone Slinger", "+50 Coins Reward!");
         giveReward(50);
     }
-}
-
-function saveAchievements() {
-    localStorage.setItem('mushroomAchievementsUnlocked', JSON.stringify(achievementsUnlocked));
 }
 
 function vibrateLocal(duration = 200, strong = 0.5, weak = 0.5) {
@@ -233,7 +224,16 @@ export function resetState() {
     coinsCount = 0;
     stoneAmmo = 0;
     totalStonesThrown = 0;
+    totalStomps = 0;
+    totalCoinsAllTime = 0;
     enemiesStompedCount = 0;
+    // Clear and reset achievementsUnlocked
+    Object.keys(achievementsUnlocked).forEach(key => delete achievementsUnlocked[key]);
+    localStorage.removeItem('mushroomAchievementsUnlocked');
+    localStorage.removeItem('mushroomTotalStomps');
+    localStorage.removeItem('mushroomTotalCoinsAllTime');
+    localStorage.removeItem('mushroomTotalStonesThrown');
+
     notificationQueue.length = 0;
     currentNotification = null;
     currentPalette = PALETTES.EMERALD;

@@ -287,3 +287,56 @@ export function drawNotifications(ctx, canvas, currentNotification, notification
         }
     }
 }
+
+export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime, totalStonesThrown) {
+    const barWidth = 150;
+    const barHeight = 10;
+    const startX = canvas.width - barWidth - 20;
+    let currentY = canvas.height - 15; // Lowered from -25 to -15
+
+    const drawSubBar = (label, current, total, color) => {
+        const progress = (current % total) / total;
+        const fillWidth = barWidth * progress;
+        const isNear = progress > 0.9;
+        const glowAlpha = isNear ? (0.5 + Math.sin(Date.now() / 150) * 0.3) : 0;
+
+        // Bar Label
+        ctx.fillStyle = '#FFF';
+        ctx.font = 'bold 11px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${label} [${current % total}/${total}]`, startX - 5, currentY + 8);
+
+        // Background bar
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(startX, currentY, barWidth, barHeight);
+
+        // Fill bar
+        if (progress > 0) {
+            ctx.fillStyle = color;
+            ctx.fillRect(startX, currentY, fillWidth, barHeight);
+
+            // Milestones near-completion glow
+            if (isNear) {
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = color;
+                ctx.strokeStyle = `rgba(255, 255, 255, ${glowAlpha})`;
+                ctx.strokeRect(startX, currentY, fillWidth, barHeight);
+                ctx.restore();
+            }
+        }
+
+        // Border
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(startX, currentY, barWidth, barHeight);
+
+        currentY -= 15; // Stack upwards
+    };
+
+    ctx.save();
+    drawSubBar('SLINGER', totalStonesThrown, 50, '#95A5A6'); // Slate grey
+    drawSubBar('TREASURE', totalCoinsAllTime, 200, '#F1C40F'); // Gold
+    drawSubBar('STOMPER', totalStomps, 25, '#E74C3C');    // Crimson Red
+    ctx.restore();
+}
