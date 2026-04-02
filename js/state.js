@@ -46,6 +46,7 @@ export function deductCoins(amount) { coinsCount -= amount; }
 export function incrementTotalStonesThrown() {
     totalStonesThrown++;
     localStorage.setItem('mushroomTotalStonesThrown', totalStonesThrown);
+    checkAchievements();
 }
 
 export function resetTotalStonesThrown() {
@@ -58,6 +59,35 @@ export let enemiesStompedCount = 0;
 
 export let totalStomps = parseInt(localStorage.getItem('mushroomTotalStomps')) || 0;
 export let totalCoinsAllTime = parseInt(localStorage.getItem('mushroomTotalCoinsAllTime')) || 0;
+export let achievementsUnlocked = JSON.parse(localStorage.getItem('mushroomAchievementsUnlocked')) || {};
+
+export function checkAchievements() {
+    // 1. Mushroom Hunter: Every 25 Stomps
+    const stompMilestones = Math.floor(totalStomps / 25);
+    if (stompMilestones > (achievementsUnlocked.stompMilestone || 0)) {
+        achievementsUnlocked.stompMilestone = stompMilestones;
+        saveAchievements();
+        // #79 giveReward(50) and #80 addNotification will go here
+    }
+
+    // 2. Treasure Seeker: Every 200 Total Coins
+    const coinMilestones = Math.floor(totalCoinsAllTime / 200);
+    if (coinMilestones > (achievementsUnlocked.coinMilestone || 0)) {
+        achievementsUnlocked.coinMilestone = coinMilestones;
+        saveAchievements();
+    }
+
+    // 3. Stone Slinger: Every 50 Stones Thrown
+    const stoneMilestones = Math.floor(totalStonesThrown / 50);
+    if (stoneMilestones > (achievementsUnlocked.stoneMilestone || 0)) {
+        achievementsUnlocked.stoneMilestone = stoneMilestones;
+        saveAchievements();
+    }
+}
+
+function saveAchievements() {
+    localStorage.setItem('mushroomAchievementsUnlocked', JSON.stringify(achievementsUnlocked));
+}
 
 export function registerRegularStompForEliteHunt() {
     enemiesStompedCount++;
@@ -128,11 +158,13 @@ export function updateStones(newList) { stones.length = 0; stones.push(...newLis
 export function incrementTotalStomps() {
     totalStomps++;
     localStorage.setItem('mushroomTotalStomps', totalStomps);
+    checkAchievements();
 }
 
 export function incrementTotalCoinsAllTime(amount) {
     totalCoinsAllTime += amount;
     localStorage.setItem('mushroomTotalCoinsAllTime', totalCoinsAllTime);
+    checkAchievements();
 }
 
 
