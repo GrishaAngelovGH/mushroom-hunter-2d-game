@@ -96,6 +96,12 @@ document.getElementById('music-volume').addEventListener('input', (e) => setMusi
 
 // UI Toggles
 window.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+
+    if (key === 'p') {
+        toggleLog();
+    }
+
     if (e.key === ' ') {
         if (!gameActive) { // Only reset if game is not active
             resetGame();
@@ -106,7 +112,6 @@ window.addEventListener('keydown', (e) => {
 
     // Original game input handling, only if game is active
     if (!gameActive) return;
-    const key = e.key.toLowerCase();
 
     // Buy stones with B
     if (key === 'b') {
