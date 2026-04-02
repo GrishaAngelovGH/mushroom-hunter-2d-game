@@ -235,13 +235,13 @@ export class MusicEngine {
         vibLfo.connect(vibGain); vibGain.connect(osc.frequency);
         vibLfo.start(now + 0.12); vibLfo.stop(now + noteDur + 0.1);
 
-        g.gain.setValueAtTime(0, now + jitter);
-        g.gain.linearRampToValueAtTime(vel, now + jitter + 0.06);
-        g.gain.exponentialRampToValueAtTime(vel * 0.4, now + jitter + noteDur * 0.6);
+        g.gain.setValueAtTime(0, Math.max(0, now + jitter));
+        g.gain.linearRampToValueAtTime(vel, Math.max(0, now + jitter) + 0.06);
+        g.gain.exponentialRampToValueAtTime(vel * 0.4, Math.max(0, now + jitter) + noteDur * 0.6);
         g.gain.exponentialRampToValueAtTime(0.001, now + jitter + noteDur);
 
         osc.connect(g); g.connect(this.nodes.melodyBus);
-        osc.start(now + jitter); osc.stop(now + jitter + noteDur + 0.05);
+        osc.start(Math.max(0, now + jitter)); osc.stop(Math.max(0, now + jitter) + noteDur + 0.05);
 
         // Occasionally add a soft upper octave sparkle
         if (step % 3 === 0 && Math.random() > 0.55) {
