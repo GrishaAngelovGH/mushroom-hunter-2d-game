@@ -70,6 +70,25 @@ export function toggleSettings() {
     }
 }
 
+export function showRules() {
+    const modal = document.getElementById('rules-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+export function hideRules() {
+    const modal = document.getElementById('rules-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+export function toggleRules() {
+    const modal = document.getElementById('rules-modal');
+    if (modal && modal.style.display === 'flex') {
+        hideRules();
+    } else {
+        showRules();
+    }
+}
+
 export function toggleVibration() {
     const newVal = !vibrationsEnabled;
     setVibrationsEnabled(newVal);
