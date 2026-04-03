@@ -142,6 +142,11 @@
     padding: 12px 20px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+.setting-item:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .setting-label {
@@ -218,7 +223,7 @@
 }
 
 .stat-value {
-    color: #d49a00;
+    color: #F1C40F;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.2);
     min-width: 30px;
 }

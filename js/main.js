@@ -111,6 +111,18 @@ window.addEventListener('keydown', (e) => {
         toggleRules();
     }
 
+    if (key === 'f') {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
     if (e.key === ' ') {
         if (!gameActive) { // Only reset if game is not active
             resetGame();
