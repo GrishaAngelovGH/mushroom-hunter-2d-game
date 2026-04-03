@@ -264,7 +264,7 @@ export function drawEliteProgressBar(ctx, stompsCount) {
     }
 
     // Text
-    ctx.fillStyle = currentPalette.uiColor;
+    ctx.fillStyle = "#FFF";
     ctx.font = 'bold 12px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`ELITE HUNT [${stompsCount % 20}/20]`, x + 5, y - 6);
