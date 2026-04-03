@@ -1,9 +1,9 @@
 import { musicEnabled, musicVolume, musicEngine, audioCtx } from './audio.js';
 import {
     vibrationsEnabled, setVibrationsEnabled, dynamicUIEnabled, setDynamicUIEnabled,
-    setCurrentPalette
+    setCurrentPalette, currentPalette
 } from './state.js';
-import { PALETTES } from './config.js';
+import { PALETTES, ENV_SHIFT_MILESTONE } from './config.js';
 import { vibrate } from './gamepad.js';
 
 export function addLog(message, type = 'info') {
@@ -264,7 +264,7 @@ export function drawEliteProgressBar(ctx, stompsCount) {
     }
 
     // Text
-    ctx.fillStyle = '#FFF';
+    ctx.fillStyle = currentPalette.uiColor;
     ctx.font = 'bold 12px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(`ELITE HUNT [${stompsCount % 20}/20]`, x + 5, y - 6);
@@ -347,7 +347,7 @@ export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime,
         const glowAlpha = isNear ? (0.5 + Math.sin(Date.now() / 150) * 0.3) : 0;
 
         // Bar Label
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = currentPalette.uiColor;
         ctx.font = 'bold 11px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
         ctx.textAlign = 'right';
         ctx.fillText(`${label} [${current % total}/${total}]`, startX - 5, currentY + 8);
@@ -384,7 +384,7 @@ export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime,
 
     // New bar for Environment Shift
     if (dynamicUIEnabled) {
-        const envShiftProgress = (enemiesStompedCount % 50) / 50;
+        const envShiftProgress = (enemiesStompedCount % ENV_SHIFT_MILESTONE) / ENV_SHIFT_MILESTONE;
         const envShiftFillWidth = barWidth * envShiftProgress;
         const envShiftX = startX;
         const envShiftY = currentY - 15; // Position it above the others, considering the new currentY
@@ -404,10 +404,10 @@ export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime,
         }
 
         // Text and Border
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = currentPalette.uiColor;
         ctx.font = 'bold 11px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
         ctx.textAlign = 'right';
-        ctx.fillText(`ENVIRONMENT [${enemiesStompedCount % 50}/50]`, envShiftX - 5, envShiftY + 8);
+        ctx.fillText(`ENVIRONMENT [${enemiesStompedCount % ENV_SHIFT_MILESTONE}/${ENV_SHIFT_MILESTONE}]`, envShiftX - 5, envShiftY + 8);
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 1;
         ctx.strokeRect(envShiftX, envShiftY, barWidth, barHeight);

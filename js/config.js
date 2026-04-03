@@ -6,7 +6,7 @@ export const FRICTION = 0.8;
 export const JUMP_FORCE = -13.4;
 export const MOVE_SPEED = 5;
 
-export const PALETTES = {
+const PALETTE_DEFAULTS = {
   EMERALD: {
     sky: '#a0e0ff',
     mountainsFar: '#7fb18a',
@@ -14,7 +14,8 @@ export const PALETTES = {
     hills: '#2d5a3f',
     grass: '#45a049',
     dirt: '#654321',
-    pipe: '#2e7d32'
+    pipe: '#2e7d32',
+    uiColor: '#000'
   },
   DUSK: {
     sky: '#4b3061',
@@ -23,7 +24,8 @@ export const PALETTES = {
     hills: '#1f1135',
     grass: '#8e44ad',
     dirt: '#4a235a',
-    pipe: '#5b2c6f'
+    pipe: '#5b2c6f',
+    uiColor: '#FFF'
   },
   MIDNIGHT: {
     sky: '#0f0c29',
@@ -32,7 +34,8 @@ export const PALETTES = {
     hills: '#0a0a12',
     grass: '#16213e',
     dirt: '#0f3460',
-    pipe: '#533483'
+    pipe: '#533483',
+    uiColor: '#FFF'
   },
   TUNDRA: {
     sky: '#e3f2fd',
@@ -41,7 +44,8 @@ export const PALETTES = {
     hills: '#455a64',
     grass: '#ffffff',
     dirt: '#cfd8dc',
-    pipe: '#607d8b'
+    pipe: '#607d8b',
+    uiColor: '#000'
   },
   AUTUMN: {
     sky: '#ffcc80',
@@ -50,8 +54,11 @@ export const PALETTES = {
     hills: '#bf360c',
     grass: '#e67e22',
     dirt: '#873600',
-    pipe: '#a04000'
+    pipe: '#a04000',
+    uiColor: '#000'
   }
 };
+
+export const PALETTES = PALETTE_DEFAULTS;
 
 export const ENV_SHIFT_MILESTONE = 50; // Change palette every 50 enemies stomped
