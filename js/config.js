@@ -28,13 +28,13 @@ const PALETTE_DEFAULTS = {
     uiColor: '#FFF'
   },
   MIDNIGHT: {
-    sky: '#0f0c29',
-    mountainsFar: '#24243e',
-    mountainsMid: '#1a1a2e',
-    hills: '#0a0a12',
-    grass: '#16213e',
-    dirt: '#0f3460',
-    pipe: '#533483',
+    sky: '#252850',
+    mountainsFar: '#4a4e69',
+    mountainsMid: '#343a40',
+    hills: '#1e212d',
+    grass: '#3a539b',
+    dirt: '#34495e',
+    pipe: '#a29bfe',
     uiColor: '#FFF'
   },
   TUNDRA: {
