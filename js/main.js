@@ -13,7 +13,8 @@ import { Stone } from './entities/Stone.js';
 import {
     toggleLog, addLog, clearLog, drawEliteProgressBar, refreshControlHints,
     syncSettingsUI, showSettings, hideSettings, toggleVibration, drawNotifications,
-    drawAchievementBars, toggleDynamicUI, showRules, hideRules, toggleRules
+    drawAchievementBars, toggleDynamicUI, showRules, hideRules, toggleRules,
+    checkFirstTime
 } from './ui.js';
 import { generateWorld } from './world.js';
 import { drawBackground } from './background.js';
@@ -283,4 +284,5 @@ function gameLoop() {
 // Start
 initLevel();
 syncSettingsUI();
+checkFirstTime();
 gameLoop();

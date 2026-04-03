@@ -36,6 +36,54 @@
     letter-spacing: 2px;
 }
 
+.modal-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.modal-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(241, 196, 15, 0.15);
+    transition: background 0.2s;
+}
+
+.modal-section:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-section h3 {
+    margin: 0;
+    font-size: 13px;
+    color: #F1C40F;
+    white-space: nowrap;
+    min-width: 160px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-section-body {
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+    border-left: 1px solid rgba(241, 196, 15, 0.2);
+    padding-left: 16px;
+    flex: 1;
+}
+
+.modal-section p,
+.modal-section li {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 2px 0;
+}
+
 .close-modal {
     position: absolute;
     top: 15px;

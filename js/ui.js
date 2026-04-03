@@ -89,6 +89,13 @@ export function toggleRules() {
     }
 }
 
+export function checkFirstTime() {
+    if (!localStorage.getItem('mushroomPlayedBefore')) {
+        showRules();
+        localStorage.setItem('mushroomPlayedBefore', 'true');
+    }
+}
+
 export function toggleVibration() {
     const newVal = !vibrationsEnabled;
     setVibrationsEnabled(newVal);
