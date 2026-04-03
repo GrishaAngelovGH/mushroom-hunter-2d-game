@@ -15,7 +15,7 @@ An engaging 2D platformer game where you take on the role of a Mushroom Hunter. 
 *   **Elite Hunt**: Stomp 20 regular mushrooms to summon a legendary Elite enemy for double points.
 *   **Dynamic Environments**: The world color palette shifts every 50 enemies stomped.
 *   **Game Settings**: Customize music volume, haptic feedback, and dynamic UI settings.
-*   **In-Game HUD**: Real-time progress bars for milestones and Elite hunting.
+*   **In-Game HUD**: Real-time progress bars for milestones, Elite hunting, and environment shifts.
 
 ## How to Play
 

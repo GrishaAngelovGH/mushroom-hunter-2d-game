@@ -280,7 +280,7 @@ function gameLoop() {
 
         // 8. Draw UI Overlays (Canvas HUD)
         drawEliteProgressBar(ctx, enemiesStompedCount);
-        drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime, totalStonesThrown);
+        drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime, totalStonesThrown, enemiesStompedCount);
         drawNotifications(ctx, canvas, currentNotification, notificationQueue);
 
         requestAnimationFrame(gameLoop);

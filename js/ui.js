@@ -109,7 +109,7 @@ export function toggleDynamicUI() {
     const newVal = !dynamicUIEnabled;
     setDynamicUIEnabled(newVal);
     localStorage.setItem('mushroomDynamicUIEnabled', newVal);
-    
+
     if (!newVal) {
         // Reset to classic emerald when disabled
         setCurrentPalette(PALETTES.EMERALD);
@@ -117,7 +117,7 @@ export function toggleDynamicUI() {
     } else {
         addLog("Dynamic UI Enabled", 'info');
     }
-    
+
     syncSettingsUI();
 }
 
@@ -334,11 +334,11 @@ export function drawNotifications(ctx, canvas, currentNotification, notification
     }
 }
 
-export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime, totalStonesThrown) {
+export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime, totalStonesThrown, enemiesStompedCount) {
     const barWidth = 150;
     const barHeight = 10;
     const startX = canvas.width - barWidth - 20;
-    let currentY = canvas.height - 15; // Lowered from -25 to -15
+    let currentY = canvas.height - 500;
 
     const drawSubBar = (label, current, total, color) => {
         const progress = (current % total) / total;
@@ -347,7 +347,7 @@ export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime,
         const glowAlpha = isNear ? (0.5 + Math.sin(Date.now() / 150) * 0.3) : 0;
 
         // Bar Label
-        ctx.fillStyle = '#FFF';
+        ctx.fillStyle = '#000';
         ctx.font = 'bold 11px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
         ctx.textAlign = 'right';
         ctx.fillText(`${label} [${current % total}/${total}]`, startX - 5, currentY + 8);
@@ -377,10 +377,44 @@ export function drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime,
         ctx.lineWidth = 1;
         ctx.strokeRect(startX, currentY, barWidth, barHeight);
 
-        currentY -= 15; // Stack upwards
+        currentY -= 20; // Increased spacing by 5px
     };
 
     ctx.save();
+
+    // New bar for Environment Shift
+    if (dynamicUIEnabled) {
+        const envShiftProgress = (enemiesStompedCount % 50) / 50;
+        const envShiftFillWidth = barWidth * envShiftProgress;
+        const envShiftX = startX;
+        const envShiftY = currentY - 15; // Position it above the others, considering the new currentY
+        currentY = envShiftY - 20; // Update currentY for subsequent bars, increasing spacing
+
+        // Background
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.fillRect(envShiftX, envShiftY, barWidth, barHeight);
+
+        // Fill
+        if (envShiftProgress > 0) {
+            const gradient = ctx.createLinearGradient(envShiftX, envShiftY, envShiftX + barWidth, envShiftY);
+            gradient.addColorStop(0, '#3498DB'); // Light Blue
+            gradient.addColorStop(1, '#2980B9'); // Darker Blue
+            ctx.fillStyle = gradient;
+            ctx.fillRect(envShiftX, envShiftY, envShiftFillWidth, barHeight);
+        }
+
+        // Text and Border
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 11px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(`ENVIRONMENT [${enemiesStompedCount % 50}/50]`, envShiftX - 5, envShiftY + 8);
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(envShiftX, envShiftY, barWidth, barHeight);
+    }
+
+
+    // Existing bars (shifted up)
     drawSubBar('SLINGER', totalStonesThrown, 50, '#95A5A6'); // Slate grey
     drawSubBar('TREASURE', totalCoinsAllTime, 200, '#F1C40F'); // Gold
     drawSubBar('STOMPER', totalStomps, 25, '#E74C3C');    // Crimson Red
