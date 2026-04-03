@@ -13,7 +13,7 @@ An engaging 2D platformer game where you take on the role of a Mushroom Hunter. 
     *   **Stone Slinger**: Every 50 stones thrown.
     *   **Reward**: Every milestone grants 50 coins and a notification banner.
 *   **Elite Hunt**: Stomp 20 regular mushrooms to summon a legendary Elite enemy for double points.
-*   **Dynamic Environments**: The world color palette shifts every 50 coins collected.
+*   **Dynamic Environments**: The world color palette shifts every 50 enemies stomped.
 *   **Game Settings**: Customize music volume, haptic feedback, and dynamic UI settings.
 *   **In-Game HUD**: Real-time progress bars for milestones and Elite hunting.
 

@@ -19,7 +19,7 @@ export function setDynamicUIEnabled(value) {
 function checkEnvironmentShift() {
     if (!dynamicUIEnabled) return;
     const paletteKeys = Object.keys(PALETTES);
-    const index = Math.floor(coinsCount / ENV_SHIFT_MILESTONE) % paletteKeys.length;
+    const index = Math.floor(enemiesStompedCount / 50) % paletteKeys.length;
     const newPalette = PALETTES[paletteKeys[index]];
 
     if (currentPalette !== newPalette) {

@@ -54,4 +54,4 @@ export const PALETTES = {
   }
 };
 
-export const ENV_SHIFT_MILESTONE = 50; // Change palette every 50 coins
+export const ENV_SHIFT_MILESTONE = 50; // Change palette every 50 enemies stomped
