@@ -63,6 +63,29 @@ export function addNotification(title, reward) {
     addLog(`🌟 Achievement Milestone: ${title}! Reward: ${reward}`, 'win');
 }
 
+export let stompCombo = 0;
+export let stompEffects = [];
+
+export function setStompCombo(val) {
+    stompCombo = val;
+}
+
+export function incrementStompCombo() {
+    stompCombo++;
+    return stompCombo;
+}
+
+export function addStompEffect(x, y, label) {
+    stompEffects.push({
+        x,
+        y,
+        label,
+        life: 45, // frames
+        maxLife: 45,
+        radius: 0
+    });
+}
+
 export let score = 0;
 export let highScore = parseInt(localStorage.getItem('mushroomHighScore')) || 0;
 export let coinsCount = 0;
@@ -234,6 +257,8 @@ export function resetState() {
     totalStomps = 0;
     totalCoinsAllTime = 0;
     enemiesStompedCount = 0;
+    stompCombo = 0;
+    stompEffects.length = 0;
     // Clear and reset achievementsUnlocked
     Object.keys(achievementsUnlocked).forEach(key => delete achievementsUnlocked[key]);
     localStorage.removeItem('mushroomAchievementsUnlocked');

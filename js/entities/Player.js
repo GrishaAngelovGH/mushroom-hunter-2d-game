@@ -1,6 +1,6 @@
 import { GRAVITY, FRICTION, MOVE_SPEED, JUMP_FORCE, CANVAS_HEIGHT } from '../config.js';
 import { keys } from '../input.js';
-import { chatBubble, platforms } from '../state.js';
+import { chatBubble, platforms, setStompCombo } from '../state.js';
 import { sounds } from '../audio.js'; // Import sounds for jump effect
 
 export class Player {
@@ -58,6 +58,7 @@ export class Player {
                     this.y = p.y - this.height;
                     this.vy = 0;
                     this.grounded = true;
+                    setStompCombo(0);
                     this.isJumping = false;
                 }
                 // Bonking head on bottom

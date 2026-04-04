@@ -7,7 +7,8 @@ import {
     stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown, incrementTotalStomps,
     STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo,
     currentNotification, notificationQueue,
-    totalStomps, totalCoinsAllTime, totalStonesThrown
+    totalStomps, totalCoinsAllTime, totalStonesThrown,
+    stompCombo, incrementStompCombo, stompEffects, addStompEffect
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import {
@@ -232,13 +233,28 @@ function gameLoop() {
             const isFalling = player.vy >= 0;
             if (isAbove || (isFalling && player.y + player.height < e.y + e.height * 0.8)) {
                 player.vy = JUMP_FORCE / 1.5;
-                const points = e.isElite ? 10 : 5;
-                addScore(points);
+                const combo = incrementStompCombo();
+                
+                // Multi-Stomp Effect
+                if (combo > 1) {
+                    addStompEffect(player.x + player.width / 2, player.y + player.height / 2, `x${combo} COMBO!`);
+                    vibrate(150 + combo * 20, 0.4 + combo * 0.1, 0.4);
+                }
+
+                // Base points + Combo Bonus
+                const basePoints = e.isElite ? 10 : 5;
+                const bonus = (combo > 1) ? (combo === 2 ? 10 : 25) : 0;
+                addScore(basePoints + bonus);
+
                 if (e.isElite) sounds.eliteHit();
                 else sounds.stomp();
                 incrementTotalStomps();
                 vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
-                addLog(e.isElite ? '🌟 Elite Stomped! +10 Points' : 'Stomped! +5 Points', 'stomp');
+                
+                const logLabel = e.isElite ? '🌟 Elite Stomped!' : 'Stomped!';
+                const logBonus = bonus > 0 ? ` (+${bonus} Combo Bonus!)` : '';
+                addLog(`${logLabel} +${basePoints + bonus} Points${logBonus}`, 'stomp');
+                
                 e.respawn();
             } else {
                 endGame(false);
@@ -282,6 +298,46 @@ function gameLoop() {
         drawEliteProgressBar(ctx, enemiesStompedCount);
         drawAchievementBars(ctx, canvas, totalStomps, totalCoinsAllTime, totalStonesThrown, enemiesStompedCount);
         drawNotifications(ctx, canvas, currentNotification, notificationQueue);
+
+        // 9. Draw Special Effects (Combos)
+        for (let i = stompEffects.length - 1; i >= 0; i--) {
+            const effect = stompEffects[i];
+            effect.life--;
+            effect.radius += 3;
+            
+            if (effect.life <= 0) {
+                stompEffects.splice(i, 1);
+                continue;
+            }
+
+            const alpha = effect.life / effect.maxLife;
+            const sx = effect.x - scrollOffset;
+            const sy = effect.y;
+
+            // Expanding Ring (Shockwave)
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(sx, sy, effect.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
+            ctx.lineWidth = 4 * alpha;
+            ctx.stroke();
+            
+            // Outer glow ring
+            ctx.beginPath();
+            ctx.arc(sx, sy, effect.radius + 10, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(241, 196, 15, ${alpha * 0.3})`;
+            ctx.lineWidth = 2 * alpha;
+            ctx.stroke();
+
+            // Floating Combo Text
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#F1C40F';
+            ctx.font = `bold ${16 + (1.0 - alpha) * 10}px "Segoe UI", Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText(effect.label, sx, sy - effect.radius - 10);
+            ctx.restore();
+        }
 
         requestAnimationFrame(gameLoop);
     } catch (e) {
