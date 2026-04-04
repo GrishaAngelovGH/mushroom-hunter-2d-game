@@ -8,7 +8,8 @@ import {
     STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo,
     currentNotification, notificationQueue,
     totalStomps, totalCoinsAllTime, totalStonesThrown,
-    stompCombo, incrementStompCombo, stompEffects, addStompEffect
+    stompCombo, incrementStompCombo, stompEffects, addStompEffect,
+    registerRegularStompForEliteHunt
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import {
@@ -214,11 +215,14 @@ function gameLoop() {
                     const points = e.isElite ? 20 : 10;
                     addScore(points);
                     if (e.isElite) sounds.eliteHit();
-                    else sounds.stomp();
+                    else {
+                        sounds.stomp();
+                        registerRegularStompForEliteHunt();
+                    }
                     incrementTotalStomps();
                     vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
                     addLog(e.isElite ? "🌟 Elite Stone Hit! +20 Points" : "Stone Hit! +10 Points", 'stone');
-                    e.respawn();
+                    e.alive = false;
                 }
             });
         });
@@ -247,7 +251,10 @@ function gameLoop() {
                 addScore(basePoints + bonus);
 
                 if (e.isElite) sounds.eliteHit();
-                else sounds.stomp();
+                else {
+                    sounds.stomp();
+                    registerRegularStompForEliteHunt();
+                }
                 incrementTotalStomps();
                 vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
                 
@@ -255,7 +262,7 @@ function gameLoop() {
                 const logBonus = bonus > 0 ? ` (+${bonus} Combo Bonus!)` : '';
                 addLog(`${logLabel} +${basePoints + bonus} Points${logBonus}`, 'stomp');
                 
-                e.respawn();
+                e.alive = false;
             } else {
                 endGame(false);
             }
@@ -281,7 +288,7 @@ function gameLoop() {
         if (platforms.length > 50) {
             updatePlatforms(platforms.filter(p => p.x + p.width > scrollOffset - 800));
             updateCoins(coins.filter(c => c.x > scrollOffset - 800));
-            updateEnemies(enemies.filter(e => e.x + e.width > scrollOffset - 800));
+            updateEnemies(enemies.filter(e => e.alive && e.x + e.width > scrollOffset - 800));
             updatePowerups(powerups.filter(pu => pu.x > scrollOffset - 800));
             updateStones(stones.filter(s => s.alive));
         }
@@ -343,6 +350,8 @@ function gameLoop() {
     } catch (e) {
         console.error("Game loop error:", e);
         setGameActive(false);
+        // Show crash alert in log for better visibility
+        addLog("Critical Engine Error — attempting hot restart...", 'info');
         setTimeout(() => {
             setGameActive(true);
         }, 1000);

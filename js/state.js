@@ -39,6 +39,7 @@ export const STONE_COST = 25;
 export const STONES_PER_BUY = 10;
 export let player = new Player();
 export let chatBubble = { text: '', timer: 0 };
+export let pendingEliteSpawn = false;
 
 export let notificationQueue = [];
 export let currentNotification = null;
@@ -162,8 +163,18 @@ export function giveReward(amount) {
 
 export function registerRegularStompForEliteHunt() {
     enemiesStompedCount++;
+    if (enemiesStompedCount > 0 && enemiesStompedCount % 20 === 0) {
+        pendingEliteSpawn = true;
+        setChatBubble("Elite mushroom coming!", 150);
+        sounds.eliteSpawn();
+        addLog("🌟 Elite Spotted!", 'powerup');
+    }
     checkEnvironmentShift();
     return enemiesStompedCount;
+}
+
+export function setPendingEliteSpawn(val) {
+    pendingEliteSpawn = val;
 }
 
 export let lastPlatX = 100;
@@ -269,6 +280,7 @@ export function resetState() {
     notificationQueue.length = 0;
     currentNotification = null;
     currentPalette = PALETTES.EMERALD;
+    pendingEliteSpawn = false;
     player.reset();
     chatBubble.timer = 0;
 }

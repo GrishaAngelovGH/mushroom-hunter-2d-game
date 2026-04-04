@@ -1,9 +1,13 @@
-import { platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY, coins, enemies, powerups } from './state.js';
+import {
+    platforms, lastPlatX, lastPlatY, setLastPlatX, setLastPlatY, coins, enemies, powerups,
+    pendingEliteSpawn, setPendingEliteSpawn
+} from './state.js';
 import { Platform } from './entities/Platform.js';
 import { Chimney } from './entities/Chimney.js';
 import { Coin } from './entities/Coin.js';
 import { Enemy } from './entities/Enemy.js';
 import { PowerUp } from './entities/PowerUp.js';
+import { ENEMY_SPAWN_CHANCE } from './config.js';
 
 export function generateWorld(startX, width) {
     // 1. Ground segment
@@ -46,10 +50,14 @@ export function generateWorld(startX, width) {
             coins.push(new Coin(currentX + platWidth / 2, platY - 30));
         }
 
-        // ~75% of floating platforms get an enemy (was ~40% via > 0.6)
-        if (Math.random() < 0.75) {
+        // Use configurable spawn chance, unless an Elite is pending
+        const spawnChance = pendingEliteSpawn ? 1.0 : ENEMY_SPAWN_CHANCE; 
+        if (Math.random() < spawnChance) {
+            const isElite = pendingEliteSpawn;
             const patrolRange = Math.max(10, platWidth - 50);
-            enemies.push(new Enemy(currentX + 10, platY - 40, patrolRange));
+            enemies.push(new Enemy(currentX + 10, platY - 40, patrolRange, isElite));
+            
+            if (isElite) setPendingEliteSpawn(false);
         }
 
         // Rare stone powerup
