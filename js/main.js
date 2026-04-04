@@ -1,11 +1,11 @@
-import { CANVAS_WIDTH, CANVAS_HEIGHT, JUMP_FORCE } from './config.js';
+import { CANVAS_WIDTH, CANVAS_HEIGHT, JUMP_FORCE, STONE_COST, STONES_PER_BUY } from './config.js';
 import {
     gameActive, setGameActive, platforms, coins, enemies, powerups, resetState,
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, updateCoins, updateEnemies, updatePowerups, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount,
     stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown, incrementTotalStomps,
-    STONE_COST, STONES_PER_BUY, deductCoins, addStoneAmmo,
+    deductCoins, addStoneAmmo,
     currentNotification, notificationQueue,
     totalStomps, totalCoinsAllTime, totalStonesThrown,
     stompCombo, incrementStompCombo, stompEffects, addStompEffect,

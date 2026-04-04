@@ -110,3 +110,11 @@ export function updateGamepadInput() {
 
     return gp;
 }
+
+export function isGamepadConnected() {
+    const gamepads = navigator.getGamepads();
+    for (let i = 0; i < gamepads.length; i++) {
+        if (gamepads[i] && gamepads[i].connected) return true;
+    }
+    return false;
+}

@@ -1,7 +1,8 @@
 import { Player } from './entities/Player.js';
 import { addLog } from './ui.js';
-import { PALETTES, ENV_SHIFT_MILESTONE } from './config.js';
+import { PALETTES, ENV_SHIFT_MILESTONE, STONE_COST, STONES_PER_BUY } from './config.js';
 import { sounds } from './audio.js';
+import { isGamepadConnected } from './gamepad.js';
 
 export let gameActive = true;
 export let vibrationsEnabled = localStorage.getItem('mushroomVibrationsEnabled') !== 'false';
@@ -35,8 +36,6 @@ export let enemies = [];
 export let powerups = [];
 export let stones = [];
 export let totalStonesThrown = 0;
-export const STONE_COST = 25;
-export const STONES_PER_BUY = 10;
 export let player = new Player();
 export let chatBubble = { text: '', timer: 0 };
 export let pendingEliteSpawn = false;
@@ -228,7 +227,8 @@ export function addCoins(amount) {
     // Stone purchase prompt
     const nextThreshold = Math.floor(coinsCount / STONE_COST) * STONE_COST;
     if (previous < nextThreshold && nextThreshold > 0) {
-        setChatBubble(`Press B – buy ${STONES_PER_BUY} 🪨 for ${STONE_COST} 🪙!`, 210);
+        const btn = isGamepadConnected() ? '△' : 'B';
+        setChatBubble(`Press ${btn} – buy ${STONES_PER_BUY} 🪨 for ${STONE_COST} 🪙!`, 210);
     }
 }
 
