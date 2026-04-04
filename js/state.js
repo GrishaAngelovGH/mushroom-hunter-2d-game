@@ -64,10 +64,12 @@ export function addNotification(title, reward) {
 }
 
 export let stompCombo = 0;
+export let currentJumpScore = 0;
 export let stompEffects = [];
 
 export function setStompCombo(val) {
     stompCombo = val;
+    if (val === 0) currentJumpScore = 0;
 }
 
 export function incrementStompCombo() {
@@ -75,14 +77,18 @@ export function incrementStompCombo() {
     return stompCombo;
 }
 
-export function addStompEffect(x, y, label) {
+export function addJumpScore(amount) {
+    currentJumpScore += amount;
+}
+
+export function addStompEffect(x, y, label, showShockwave = true) {
     stompEffects.push({
         x,
         y,
         label,
-        life: 45, // frames
-        maxLife: 45,
-        radius: 0
+        showShockwave,
+        timer: 30, // frames
+        maxTimer: 30
     });
 }
 
@@ -269,6 +275,7 @@ export function resetState() {
     totalCoinsAllTime = 0;
     enemiesStompedCount = 0;
     stompCombo = 0;
+    currentJumpScore = 0;
     stompEffects.length = 0;
     // Clear and reset achievementsUnlocked
     Object.keys(achievementsUnlocked).forEach(key => delete achievementsUnlocked[key]);

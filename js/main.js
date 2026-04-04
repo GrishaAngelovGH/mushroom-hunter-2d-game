@@ -1,4 +1,7 @@
-import { CANVAS_WIDTH, CANVAS_HEIGHT, JUMP_FORCE, STONE_COST, STONES_PER_BUY } from './config.js';
+import {
+    CANVAS_WIDTH, CANVAS_HEIGHT, JUMP_FORCE, STONE_COST, STONES_PER_BUY,
+    STOMP_SHOCKWAVE_MAX_RADIUS, STOMP_SHOCKWAVE_MIN_RADIUS
+} from './config.js';
 import {
     gameActive, setGameActive, platforms, coins, enemies, powerups, resetState,
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
@@ -9,6 +12,7 @@ import {
     currentNotification, notificationQueue,
     totalStomps, totalCoinsAllTime, totalStonesThrown,
     stompCombo, incrementStompCombo, stompEffects, addStompEffect,
+    currentJumpScore, addJumpScore,
     registerRegularStompForEliteHunt
 } from './state.js';
 import { Stone } from './entities/Stone.js';
@@ -222,6 +226,7 @@ function gameLoop() {
                     incrementTotalStomps();
                     vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
                     addLog(e.isElite ? "🌟 Elite Stone Hit! +20 Points" : "Stone Hit! +10 Points", 'stone');
+                    addStompEffect(e.x + e.width / 2, e.y, `+${points}`, false); // Stone hits have no shockwave
                     e.alive = false;
                 }
             });
@@ -241,7 +246,7 @@ function gameLoop() {
                 
                 // Multi-Stomp Effect
                 if (combo > 1) {
-                    addStompEffect(player.x + player.width / 2, player.y + player.height / 2, `x${combo} COMBO!`);
+                    addStompEffect(player.x + player.width / 2, player.y + player.height / 2, `x${combo} COMBO!`, false);
                     vibrate(150 + combo * 20, 0.4 + combo * 0.1, 0.4);
                 }
 
@@ -249,18 +254,26 @@ function gameLoop() {
                 const basePoints = e.isElite ? 10 : 5;
                 const bonus = (combo > 1) ? (combo === 2 ? 10 : 25) : 0;
                 addScore(basePoints + bonus);
+                addJumpScore(basePoints + bonus);
+                incrementTotalStomps();
 
                 if (e.isElite) sounds.eliteHit();
                 else {
                     sounds.stomp();
                     registerRegularStompForEliteHunt();
                 }
-                incrementTotalStomps();
+
                 vibrate(e.isElite ? 200 : 120, e.isElite ? 0.8 : 0.5, 0.3);
-                
+
+                // Add to dynamic stomp effects (floating text, shockwave only for combos)
+                addStompEffect(e.x + e.width / 2, e.y, `+${basePoints + bonus}`, (combo > 1));
+
                 const logLabel = e.isElite ? '🌟 Elite Stomped!' : 'Stomped!';
                 const logBonus = bonus > 0 ? ` (+${bonus} Combo Bonus!)` : '';
-                addLog(`${logLabel} +${basePoints + bonus} Points${logBonus}`, 'stomp');
+                const comboPrefix = combo > 1 ? `${combo}x COMBO! ` : '';
+                const totalSuffix = combo > 1 ? ' Total' : '';
+                
+                addLog(`${comboPrefix}${logLabel} +${currentJumpScore} Points${totalSuffix}${logBonus}`, 'stomp');
                 
                 e.alive = false;
             } else {
@@ -309,32 +322,35 @@ function gameLoop() {
         // 9. Draw Special Effects (Combos)
         for (let i = stompEffects.length - 1; i >= 0; i--) {
             const effect = stompEffects[i];
-            effect.life--;
-            effect.radius += 3;
+            effect.timer--;
             
-            if (effect.life <= 0) {
+            if (effect.timer <= 0) {
                 stompEffects.splice(i, 1);
                 continue;
             }
 
-            const alpha = effect.life / effect.maxLife;
+            const alpha = effect.timer / effect.maxTimer;
+            const scale = 1 - alpha; // Grows from 0 to 1
+            const radius = STOMP_SHOCKWAVE_MIN_RADIUS + scale * (STOMP_SHOCKWAVE_MAX_RADIUS - STOMP_SHOCKWAVE_MIN_RADIUS);
             const sx = effect.x - scrollOffset;
             const sy = effect.y;
 
-            // Expanding Ring (Shockwave)
             ctx.save();
-            ctx.beginPath();
-            ctx.arc(sx, sy, effect.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
-            ctx.lineWidth = 4 * alpha;
-            ctx.stroke();
-            
-            // Outer glow ring
-            ctx.beginPath();
-            ctx.arc(sx, sy, effect.radius + 10, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(241, 196, 15, ${alpha * 0.3})`;
-            ctx.lineWidth = 2 * alpha;
-            ctx.stroke();
+            // Expanding Ring (Shockwave) - Only if showShockwave is true
+            if (effect.showShockwave) {
+                ctx.beginPath();
+                ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
+                ctx.lineWidth = 4 * alpha;
+                ctx.stroke();
+                
+                // Outer glow ring
+                ctx.beginPath();
+                ctx.arc(sx, sy, radius + 10, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(241, 196, 15, ${alpha * 0.3})`;
+                ctx.lineWidth = 2 * alpha;
+                ctx.stroke();
+            }
 
             // Floating Combo Text
             ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
@@ -342,7 +358,7 @@ function gameLoop() {
             ctx.shadowColor = '#F1C40F';
             ctx.font = `bold ${16 + (1.0 - alpha) * 10}px "Segoe UI", Arial, sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText(effect.label, sx, sy - effect.radius - 10);
+            ctx.fillText(effect.label, sx, sy - radius - 15);
             ctx.restore();
         }
 

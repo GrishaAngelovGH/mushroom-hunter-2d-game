@@ -62,6 +62,8 @@ const PALETTE_DEFAULTS = {
 export const PALETTES = PALETTE_DEFAULTS;
 
 export const ENV_SHIFT_MILESTONE = 50; // Change palette every 50 enemies stomped
-export const ENEMY_SPAWN_CHANCE = 0.6; // Probability of an enemy spawning on a platform
+export const ENEMY_SPAWN_CHANCE = 0.7; // Probability of an enemy spawning on a platform
 export const STONE_COST = 25; // Cost in coins to buy stones
 export const STONES_PER_BUY = 10; // Number of stones given per purchase
+export const STOMP_SHOCKWAVE_MAX_RADIUS = 50; // Maximum size of the stomp ripple effect
+export const STOMP_SHOCKWAVE_MIN_RADIUS = 20; // Starting size of the stomp ripple effect
