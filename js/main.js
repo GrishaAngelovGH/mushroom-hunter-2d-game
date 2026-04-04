@@ -7,6 +7,7 @@ import {
     lastGeneratedX, setLastGeneratedX, scrollOffset, setScrollOffset,
     updatePlatforms, updateCoins, updateEnemies, updatePowerups, player, chatBubble, setChatBubble,
     score, highScore, coinsCount, stoneAmmo, addCoins, addScore, enemiesStompedCount,
+    resetHighScore,
     stones, updateStones, consumeStoneAmmo, incrementTotalStonesThrown, incrementTotalStomps,
     deductCoins, addStoneAmmo,
     currentNotification, notificationQueue,
@@ -100,6 +101,12 @@ document.getElementById('music-icon').addEventListener('click', toggleMusic);
 document.getElementById('vibration-toggle').addEventListener('click', toggleVibration);
 document.getElementById('dynamic-ui-toggle').addEventListener('click', toggleDynamicUI);
 document.getElementById('music-volume').addEventListener('input', (e) => setMusicVolume(e.target.value));
+
+document.getElementById('clear-highscore').addEventListener('click', () => {
+    resetHighScore();
+    document.getElementById('high-score').textContent = '0';
+    addLog("Highscore cleared!", 'info');
+});
 
 // Rules UI Events
 document.getElementById('close-rules').addEventListener('click', hideRules);

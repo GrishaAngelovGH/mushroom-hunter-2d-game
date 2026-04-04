@@ -169,6 +169,20 @@
     min-width: 80px;
 }
 
+.setting-btn-danger {
+    padding: 8px 18px;
+    font-size: 11px;
+    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+    border: 2px solid #a93226;
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+    min-width: 140px;
+}
+
+.setting-btn-danger:hover {
+    background: linear-gradient(to bottom, #ff5e57, #e74c3c);
+    box-shadow: 0 6px 12px rgba(231, 76, 60, 0.4);
+}
+
 #music-volume {
     width: 100px;
 }

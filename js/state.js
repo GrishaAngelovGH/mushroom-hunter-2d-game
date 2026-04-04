@@ -220,6 +220,11 @@ export function addScore(amount) {
     }
 }
 
+export function resetHighScore() {
+    highScore = 0;
+    localStorage.removeItem('mushroomHighScore');
+}
+
 export function addCoins(amount) {
     const previous = coinsCount;
     coinsCount += amount;
