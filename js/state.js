@@ -213,7 +213,7 @@ export function addScore(amount) {
 
     if (score > 0 && Math.floor(score / 100) > Math.floor(oldScore / 100)) {
         setChatBubble("Yes, another 100 points reached!", 180);
-        addLog(`Great work! ${Math.floor(score / 100) * 100} points!`, 'win');
+        addLog("Great work! Another 100 points!", 'win');
     }
 
     if (score > highScore) {
