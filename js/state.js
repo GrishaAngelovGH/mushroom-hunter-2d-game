@@ -137,7 +137,6 @@ export function checkAchievements() {
         addLog("🌟 Achievement: Mushroom Hunter! (+50 Coins)", "win");
         addNotification("Mushroom Hunter", "+50 Coins Reward!");
         giveReward(50);
-        addShield();
     }
 
     // 2. Treasure Seeker: Every 200 Total Coins
@@ -147,7 +146,6 @@ export function checkAchievements() {
         addLog("🌟 Achievement: Treasure Seeker! (+50 Coins)", "win");
         addNotification("Treasure Seeker", "+50 Coins Reward!");
         giveReward(50);
-        addShield();
     }
 
     // 3. Stone Slinger: Every 50 Stones Thrown
@@ -157,6 +155,12 @@ export function checkAchievements() {
         addLog("🌟 Achievement: Stone Slinger! (+50 Coins)", "win");
         addNotification("Stone Slinger", "+50 Coins Reward!");
         giveReward(50);
+    }
+
+    // Shield Reward: Only if ALL three milestones have been completed at least once
+    if (achievementsUnlocked.stompMilestone > 0 &&
+        achievementsUnlocked.coinMilestone > 0 &&
+        achievementsUnlocked.stoneMilestone > 0) {
         addShield();
     }
 }
