@@ -106,7 +106,7 @@ export function deductCoins(amount) { coinsCount -= amount; }
 export function addShield() {
     if (shields === 0) {
         shields++;
-        sounds.shieldGained();
+        setTimeout(() => sounds.shieldGained(), 600); // Plays after the milestone powerup sound
         setChatBubble('\ud83d\udee1\ufe0f Shield gained!', 150);
         addLog('\ud83d\udee1\ufe0f Shield gained — one hit protected!', 'powerup');
     }

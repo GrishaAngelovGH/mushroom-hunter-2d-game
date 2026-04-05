@@ -146,10 +146,13 @@ export const sounds = {
         setTimeout(() => playSound(1046.50, 'sine', 0.4, 0.1, 1318.51), notes.length * 130);
     },
     shieldGained: () => {
-        // Rising protective chime — feels like armour locking in
-        [440, 554, 659, 880].forEach((f, i) => {
-            setTimeout(() => playSound(f, 'sine', 0.2, 0.08, f + 40), i * 80);
-        });
+        // Low protective "whomp" — gives it weight
+        playSound(100, 'triangle', 0.2, 0.3, 200);
+        // Metallic shield "snap" — high ping as it locks in
+        setTimeout(() => playSound(1400, 'sine', 0.5, 0.15), 100);
+        // Echo tail — distinct ringing resonance
+        setTimeout(() => playSound(1400, 'sine', 0.3, 0.08), 280);
+        setTimeout(() => playSound(1100, 'sine', 0.2, 0.06), 430);
     },
     shieldHit: () => {
         // Metallic clang + quick descending tone
