@@ -131,6 +131,19 @@ export const sounds = {
         [392.00, 493.88, 587.33, 783.99, 987.77].forEach((f, i) => {
             setTimeout(() => playSound(f, 'sine', 0.6, 0.08, f + 100), i * 120);
         });
+    },
+    fanfare: () => {
+        // Heroic C-Major triad fanfare (C4, E4, G4, C5)
+        // Square gives punch, sine adds shimmer on top
+        const notes = [261.63, 329.63, 392.00, 523.25];
+        notes.forEach((f, i) => {
+            setTimeout(() => {
+                playSound(f, 'square', 0.25, 0.12, f * 1.01);
+                playSound(f * 2, 'sine', 0.2, 0.05);
+            }, i * 130);
+        });
+        // Final high flourish
+        setTimeout(() => playSound(1046.50, 'sine', 0.4, 0.1, 1318.51), notes.length * 130);
     }
 };
 

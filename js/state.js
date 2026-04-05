@@ -94,6 +94,8 @@ export function addStompEffect(x, y, label, showShockwave = true) {
 
 export let score = 0;
 export let highScore = parseInt(localStorage.getItem('mushroomHighScore')) || 0;
+export let highScoreAtRunStart = highScore; // Snapshot at start of each run
+export let highscoreBrokenInRun = false;
 export let coinsCount = 0;
 export let stoneAmmo = 0;
 
@@ -215,6 +217,12 @@ export function addScore(amount) {
     }
 
     if (score > highScore) {
+        if (highScoreAtRunStart > 0 && !highscoreBrokenInRun) {
+            sounds.fanfare();
+            setChatBubble("🏆 NEW RECORD!", 210);
+            addLog("🎊 NEW HIGH SCORE! 🎊", 'win');
+            highscoreBrokenInRun = true;
+        }
         highScore = score;
         localStorage.setItem('mushroomHighScore', highScore);
     }
@@ -281,6 +289,8 @@ export function resetState() {
     enemiesStompedCount = 0;
     stompCombo = 0;
     currentJumpScore = 0;
+    highscoreBrokenInRun = false;
+    highScoreAtRunStart = highScore; // Snapshot current highscore for this new run
     stompEffects.length = 0;
     // Clear and reset achievementsUnlocked
     Object.keys(achievementsUnlocked).forEach(key => delete achievementsUnlocked[key]);
