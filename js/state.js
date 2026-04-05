@@ -96,12 +96,22 @@ export let score = 0;
 export let highScore = parseInt(localStorage.getItem('mushroomHighScore')) || 0;
 export let highScoreAtRunStart = highScore; // Snapshot at start of each run
 export let highscoreBrokenInRun = false;
+export let shields = 0;
 export let coinsCount = 0;
 export let stoneAmmo = 0;
 
 export function consumeStoneAmmo() { stoneAmmo--; }
 export function addStoneAmmo(amount) { stoneAmmo += amount; }
 export function deductCoins(amount) { coinsCount -= amount; }
+export function addShield() {
+    if (shields === 0) {
+        shields++;
+        sounds.shieldGained();
+        setChatBubble('\ud83d\udee1\ufe0f Shield gained!', 150);
+        addLog('\ud83d\udee1\ufe0f Shield gained — one hit protected!', 'powerup');
+    }
+}
+export function consumeShield() { if (shields > 0) shields--; }
 
 export function incrementTotalStonesThrown() {
     totalStonesThrown++;
@@ -127,6 +137,7 @@ export function checkAchievements() {
         addLog("🌟 Achievement: Mushroom Hunter! (+50 Coins)", "win");
         addNotification("Mushroom Hunter", "+50 Coins Reward!");
         giveReward(50);
+        addShield();
     }
 
     // 2. Treasure Seeker: Every 200 Total Coins
@@ -136,6 +147,7 @@ export function checkAchievements() {
         addLog("🌟 Achievement: Treasure Seeker! (+50 Coins)", "win");
         addNotification("Treasure Seeker", "+50 Coins Reward!");
         giveReward(50);
+        addShield();
     }
 
     // 3. Stone Slinger: Every 50 Stones Thrown
@@ -145,6 +157,7 @@ export function checkAchievements() {
         addLog("🌟 Achievement: Stone Slinger! (+50 Coins)", "win");
         addNotification("Stone Slinger", "+50 Coins Reward!");
         giveReward(50);
+        addShield();
     }
 }
 
@@ -283,6 +296,7 @@ export function resetState() {
     score = 0;
     coinsCount = 0;
     stoneAmmo = 0;
+    shields = 0;
     totalStonesThrown = 0;
     totalStomps = 0;
     totalCoinsAllTime = 0;

@@ -14,7 +14,8 @@ import {
     totalStomps, totalCoinsAllTime, totalStonesThrown,
     stompCombo, incrementStompCombo, stompEffects, addStompEffect,
     currentJumpScore, addJumpScore,
-    registerRegularStompForEliteHunt
+    registerRegularStompForEliteHunt,
+    shields, consumeShield
 } from './state.js';
 import { Stone } from './entities/Stone.js';
 import {
@@ -47,6 +48,7 @@ const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('high-score');
 const coinsElement = document.getElementById('coins');
 const stonesElement = document.getElementById('stones');
+const shieldsElement = document.getElementById('shields');
 
 const gameOverScreen = document.getElementById('game-over');
 const statusText = document.getElementById('status-text');
@@ -188,6 +190,11 @@ function gameLoop() {
         highScoreElement.innerText = highScore;
         coinsElement.innerText = coinsCount;
         stonesElement.innerText = stoneAmmo;
+        if (shieldsElement) {
+            shieldsElement.innerText = shields;
+            const badge = document.getElementById('shield-badge');
+            if (badge) badge.style.display = shields > 0 ? '' : 'none';
+        }
 
         // 3. Update camera (Horizontal scrolling follows player)
         if (player.x > scrollOffset + canvas.width / 2) {
@@ -284,7 +291,17 @@ function gameLoop() {
                 
                 e.alive = false;
             } else {
-                endGame(false);
+                if (shields > 0) {
+                    consumeShield();
+                    sounds.shieldHit();
+                    vibrate(300, 1.0, 0.5);
+                    addStompEffect(player.x + player.width / 2, player.y + player.height / 2, '🛡️ BLOCKED!', false);
+                    addLog(`🛡️ Shield absorbed the hit! ${shields} shield${shields === 1 ? '' : 's'} left.`, 'powerup');
+                    player.vy = JUMP_FORCE / 1.5;
+                    e.alive = false;
+                } else {
+                    endGame(false);
+                }
             }
         });
 

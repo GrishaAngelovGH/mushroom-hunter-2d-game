@@ -144,6 +144,17 @@ export const sounds = {
         });
         // Final high flourish
         setTimeout(() => playSound(1046.50, 'sine', 0.4, 0.1, 1318.51), notes.length * 130);
+    },
+    shieldGained: () => {
+        // Rising protective chime — feels like armour locking in
+        [440, 554, 659, 880].forEach((f, i) => {
+            setTimeout(() => playSound(f, 'sine', 0.2, 0.08, f + 40), i * 80);
+        });
+    },
+    shieldHit: () => {
+        // Metallic clang + quick descending tone
+        playSound(800, 'square', 0.08, 0.2, 300);
+        setTimeout(() => playSound(400, 'triangle', 0.25, 0.15, 150), 60);
     }
 };
 

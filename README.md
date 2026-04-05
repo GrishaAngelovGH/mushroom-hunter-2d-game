@@ -5,13 +5,14 @@ An engaging 2D platformer game where you take on the role of a Mushroom Hunter. 
 ## Features
 
 *   **Platformer Mechanics**: Smooth movement, jumping controls, and native Gamepad support.
-*   **Dynamic Scoring**: Points for stomping mushrooms, hitting targets, and defeating legendary Elites.
-*   **Resource Management**: Collect coins to purchase stones (10 🪨 for 100 🪙) and throw them at enemies.
+*   **Dynamic Scoring**: Points for stomping mushrooms, hitting targets, and defeating legendary Elites. Beat your high score and a heroic fanfare plays!
+*   **Resource Management**: Collect coins to purchase stones (10 🪨 for 25 🪙) and throw them at enemies.
+*   **Shield System**: Complete a **Stomper**, **Treasure Seeker**, or **Stone Slinger** milestone to earn a 🛡️ Shield — absorbs one enemy body hit that would otherwise end the game (max 1 at a time).
 *   **Progression System**: 
     *   **Stomper**: Every 25 stomps.
     *   **Treasure Seeker**: Every 200 coins.
     *   **Stone Slinger**: Every 50 stones thrown.
-    *   **Reward**: Every milestone grants 50 coins and a notification banner.
+    *   **Reward**: Every milestone grants 50 coins, a notification banner, and a 🛡️ Shield (if you don't already have one).
 *   **Elite Hunt**: Stomp 20 regular mushrooms to summon a legendary Elite enemy for double points.
 *   **Dynamic Environments**: The world color palette shifts every 50 enemies stomped.
 *   **Game Settings**: Customize music volume, haptic feedback, and dynamic UI settings.
