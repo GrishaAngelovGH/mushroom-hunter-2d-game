@@ -34,6 +34,7 @@ This project was developed with the AI assistance of:
  - gemini-3-flash via gemini-cli 
  - gemini 3.1 pro via Antigravity IDE
  - claude code (sonnet 4.6) via web
+ - sonnet 4.6 via Antigravity IDE
 
 ## Technology Stack
 
